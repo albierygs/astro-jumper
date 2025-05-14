@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="11" nextobjectid="78">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="12" nextobjectid="100">
  <tileset firstgid="1" source="platformerPack_industrial_tilesheet.tsx"/>
  <imagelayer id="3" name="background" repeatx="1">
-  <image source="background.jpg" width="1280" height="720"/>
+  <image source="background-geometry-dash.png" width="3840" height="1240"/>
  </imagelayer>
  <imagelayer id="4" name="spaceship" offsetx="3714" offsety="432">
   <image source="spaceship.png" width="110" height="177"/>
@@ -12,46 +12,23 @@
    eJxjYBgFgwWYALHTQDuCRsAFje/EMDT8GkiGmBMDdv+ZUMtRQwDgCoOhAkwYMOPLhQEzHcfQxzkowI1EcXYgNgRiIyA2RhKHiVGKkc1kI9k3qMATiL2A2JtM/SC/slLoBlIAyC5K/RxKpj6YX+ntX2x+Rs4X5nj0MwIxExAzAzELiXxWJGxCJ4xsJyMZGADpdBGg
   </data>
  </layer>
- <objectgroup id="5" name="ground">
-  <object id="13" x="0" y="612" width="1224" height="68"/>
-  <object id="15" x="1156" y="476" width="64" height="132"/>
-  <object id="16" x="1088" y="544" width="68" height="68"/>
-  <object id="24" x="1208" y="932"/>
-  <object id="30" x="1224" y="408" width="204" height="30"/>
-  <object id="33" x="1564" y="408" width="1292" height="30"/>
-  <object id="34" x="1920" y="548"/>
-  <object id="35" x="2244" y="204" width="204" height="30"/>
-  <object id="36" x="1988" y="974"/>
-  <object id="37" x="2584" y="272" width="198" height="30"/>
-  <object id="38" x="2584" y="136" width="136" height="30"/>
-  <object id="41" x="2720" y="68" width="68" height="30"/>
-  <object id="42" x="2352" y="912"/>
-  <object id="43" x="2992" y="476" width="68" height="204"/>
-  <object id="44" x="3060" y="544" width="68" height="136"/>
-  <object id="45" x="3128" y="612" width="952" height="68"/>
-  <object id="56" x="1020" y="612">
-   <polygon points="0,0 204,-204 204,-136 136,-136 136,-68 68,-68 68,0"/>
+ <objectgroup id="11" name="ground">
+  <object id="79" x="1020" y="612">
+   <polygon points="0,0 204,0 204,-204"/>
   </object>
-  <object id="57" x="3196" y="612">
-   <polygon points="0,0 -204,-204 -204,-136 -136,-136 -136,-68 -68,-68 -68,0"/>
+  <object id="85" x="0" y="612" width="1020" height="68"/>
+  <object id="88" x="1224" y="408" width="202.667" height="30.6667"/>
+  <object id="90" x="1564" y="408" width="1294" height="30"/>
+  <object id="91" x="2244" y="204" width="206" height="28"/>
+  <object id="92" x="2584" y="272" width="204" height="26"/>
+  <object id="93" x="2584" y="136" width="134" height="24"/>
+  <object id="94" x="2720" y="68" width="70" height="26"/>
+  <object id="95" x="3196" y="612" width="884" height="68"/>
+  <object id="96" x="3196" y="612">
+   <polygon points="0,0 -204,0 -204,-204"/>
   </object>
-  <object id="72" x="1020" y="612">
-   <polygon points="0,0 204,-204 0,0"/>
-  </object>
-  <object id="73" x="1224" y="408">
-   <polygon points="0,0 0,68 -68,68"/>
-  </object>
-  <object id="74" x="1156" y="476">
-   <polygon points="0,0 0,68 -68,68"/>
-  </object>
-  <object id="75" x="1088" y="544">
-   <polygon points="0,0 0,68 -68,68"/>
-  </object>
-  <object id="76" x="2992" y="408">
-   <polygon points="0,0 0,68 68,68 0,0 0,204 204,204"/>
-  </object>
-  <object id="77" x="3128" y="544">
-   <polygon points="0,0 0,68 68,68"/>
+  <object id="99" x="1020" y="612">
+   <polygon points="0,0 204,-204 204,0"/>
   </object>
  </objectgroup>
  <objectgroup id="6" name="damage">
