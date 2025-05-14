@@ -2,6 +2,8 @@ package br.uneb.astrojumper.screens;
 
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.sprites.Astronaut;
+import br.uneb.astrojumper.sprites.Explosion;
+import br.uneb.astrojumper.sprites.Meteor;
 import br.uneb.astrojumper.tools.B2WorldCreator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -35,6 +37,8 @@ public class PlayScreen implements Screen {
 
     private Astronaut player;
 
+    private Meteor meteor;
+
     public PlayScreen(final AstroJumper game) {
         this.game = game;
         batch = new SpriteBatch();
@@ -54,6 +58,8 @@ public class PlayScreen implements Screen {
         player = new Astronaut(world);
 
         new B2WorldCreator(world, map);
+
+        meteor = new Meteor(900, AstroJumper.VIRTUAL_HEIGHT);
     }
 
     @Override
@@ -71,6 +77,13 @@ public class PlayScreen implements Screen {
         renderer.render();
 
         b2dr.render(world, gameCam.combined);
+
+        batch.begin();
+
+        meteor.update(delta);
+        meteor.render(batch);
+
+        batch.end();
 
         viewport.apply();
 //        batch.setProjectionMatrix(hud.stage.getCamera().combined);
