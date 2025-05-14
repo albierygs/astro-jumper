@@ -2,9 +2,8 @@ package br.uneb.astrojumper.screens;
 
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.sprites.Astronaut;
-import br.uneb.astrojumper.sprites.Explosion;
 import br.uneb.astrojumper.sprites.Meteor;
-import br.uneb.astrojumper.tools.B2WorldCreator;
+import br.uneb.astrojumper.utils.B2WorldCreator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;

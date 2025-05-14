@@ -1,10 +1,8 @@
-package br.uneb.astrojumper.tools;
+package br.uneb.astrojumper.utils;
 
 import br.uneb.astrojumper.sprites.*;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class B2WorldCreator {
