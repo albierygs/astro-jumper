@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="12" nextobjectid="100">
- <tileset firstgid="1" source="platformerPack_industrial_tilesheet.tsx"/>
+ <tileset firstgid="1" source="assets/platformerPack-industrial-tilesheet.tsx"/>
  <imagelayer id="3" name="background" repeatx="1">
-  <image source="background-geometry-dash.png" width="3840" height="1240"/>
+  <image source="assets/background-geometry-dash.png" width="3840" height="1240"/>
  </imagelayer>
  <imagelayer id="4" name="spaceship" offsetx="3714" offsety="432">
-  <image source="spaceship.png" width="110" height="177"/>
+  <image source="assets/spaceship.png" width="110" height="177"/>
  </imagelayer>
  <layer id="1" name="graphics" width="60" height="10">
   <data encoding="base64" compression="zlib">
@@ -58,6 +58,6 @@
   <object id="71" x="3672" y="408" width="204" height="204"/>
  </objectgroup>
  <imagelayer id="9" name="star1" offsetx="2724" offsety="14">
-  <image source="star.png" width="55" height="55"/>
+  <image source="assets/star.png" width="55" height="55"/>
  </imagelayer>
 </map>
