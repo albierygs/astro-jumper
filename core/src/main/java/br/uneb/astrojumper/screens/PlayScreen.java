@@ -1,9 +1,11 @@
 package br.uneb.astrojumper.screens;
 
 import br.uneb.astrojumper.AstroJumper;
-import br.uneb.astrojumper.sprites.Astronaut;
-import br.uneb.astrojumper.sprites.Meteor;
-import br.uneb.astrojumper.utils.B2WorldCreator;
+import br.uneb.astrojumper.entities.Astronaut;
+import br.uneb.astrojumper.entities.Meteor;
+import br.uneb.astrojumper.scenes.Hud;
+import br.uneb.astrojumper.tiles.WorldObjectsCreator;
+import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -11,7 +13,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -26,39 +27,38 @@ public class PlayScreen implements Screen {
     private final SpriteBatch batch;
     private final OrthographicCamera gameCam;
     private final Viewport viewport;
-//    private final Hud hud;
-    private final TmxMapLoader mapLoader;
+    private final Hud hud;
+
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
 
     private World world;
-    private Box2DDebugRenderer b2dr;
-
-    private Astronaut player;
+    private final Astronaut player;
+    private Box2DDebugRenderer box2DRenderer;
 
     private Meteor meteor;
 
-    public PlayScreen(final AstroJumper game) {
+    public PlayScreen(final AstroJumper game, TiledMap mapLevel) {
         this.game = game;
         batch = new SpriteBatch();
         gameCam = new OrthographicCamera();
-        viewport = new FitViewport(AstroJumper.VIRTUAL_WIDTH / AstroJumper.PIXELS_PER_METER, AstroJumper.VIRTUAL_HEIGHT / AstroJumper.PIXELS_PER_METER, gameCam);
-//        hud = new Hud(batch);
+        viewport = new FitViewport(Constants.VIRTUAL_WIDTH / Constants.PIXELS_PER_METER, Constants.VIRTUAL_HEIGHT / Constants.PIXELS_PER_METER, gameCam);
+        hud = new Hud(batch, new FitViewport(AstroJumper.V_WIDTH, AstroJumper.V_HEIGHT, new OrthographicCamera()), 300, 0f, 0);
 
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("maps/level1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / AstroJumper.PIXELS_PER_METER);
+
+        map = mapLevel;
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / Constants.PIXELS_PER_METER);
 
         gameCam.position.set((float) viewport.getWorldWidth() / 2, (float) viewport.getWorldHeight() / 2, 0);
 
         world = new World(new Vector2(0, -10), true);
-        b2dr = new Box2DDebugRenderer();
+        box2DRenderer = new Box2DDebugRenderer();
 
         player = new Astronaut(world);
 
-        new B2WorldCreator(world, map);
+        new WorldObjectsCreator(world, map);
 
-        meteor = new Meteor(900, AstroJumper.VIRTUAL_HEIGHT);
+        meteor = new Meteor(900, Constants.VIRTUAL_HEIGHT);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class PlayScreen implements Screen {
 
         renderer.render();
 
-        b2dr.render(world, gameCam.combined);
+        box2DRenderer.render(world, gameCam.combined);
 
         batch.begin();
 
@@ -85,8 +85,8 @@ public class PlayScreen implements Screen {
         batch.end();
 
         viewport.apply();
-//        batch.setProjectionMatrix(hud.stage.getCamera().combined);
-//        hud.stage.draw();
+        batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class PlayScreen implements Screen {
         map.dispose();
         renderer.dispose();
         world.dispose();
-        b2dr.dispose();
+        box2DRenderer.dispose();
         // hud.dispose();
     }
 

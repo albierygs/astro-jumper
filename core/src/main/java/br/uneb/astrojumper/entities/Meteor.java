@@ -1,6 +1,6 @@
-package br.uneb.astrojumper.sprites;
+package br.uneb.astrojumper.entities;
 
-import com.badlogic.gdx.Gdx;
+import br.uneb.astrojumper.utils.AssetLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,23 +11,23 @@ public class Meteor {
     private static final float GROUND_Y = 70f;
 
     private Vector2 position;
-    private Vector2 velocity;
-    private Texture texture;
+    private final Vector2 velocity;
+    private final Texture texture;
 
     private boolean exploding;
     private boolean finished;
     private Explosion explosion;
-    private Sound sound;
+    private final Sound sound;
 
 
     public Meteor(float x, float y) {
-        this.texture = new Texture("./textures/meteor.png");
+        this.texture = AssetLoader.get("meteor.png", Texture.class);
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, -200);
         this.exploding = false;
         this.finished = false;
         this.explosion = new Explosion(position.x, position.y);
-        this.sound = Gdx.audio.newSound(Gdx.files.internal("./sounds/meteor-impact.mp3"));
+        this.sound = AssetLoader.get("meteor-impact.mp3", Sound.class);
     }
 
     public void update(float deltaTime) {

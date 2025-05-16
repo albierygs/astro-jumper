@@ -1,5 +1,6 @@
-package br.uneb.astrojumper.sprites;
+package br.uneb.astrojumper.entities;
 
+import br.uneb.astrojumper.utils.AssetLoader;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -13,7 +14,7 @@ public class Explosion {
     private boolean finished;
 
     public Explosion(float x, float y) {
-        Texture sheet = new Texture("./textures/explosion.png"); // Carregando o spritesheet
+        Texture sheet = AssetLoader.get("explosion.png", Texture.class); // Carregando o spritesheet
 
         int rows = 1; // Linhas do sprite
         int columns = 8; // Colunas do sprite
