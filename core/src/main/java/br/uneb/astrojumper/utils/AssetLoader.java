@@ -19,7 +19,6 @@ public class AssetLoader {
         // carregando as texturas
         manager.load("textures/astronaut.png", Texture.class);
         manager.load("textures/bullet.png", Texture.class);
-        manager.load("textures/bolt-gold.png", Texture.class);
         manager.load("textures/bullet-impact.png", Texture.class);
         manager.load("textures/explosion.png", Texture.class);
         manager.load("textures/meteor.png", Texture.class);

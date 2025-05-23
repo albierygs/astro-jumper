@@ -2,59 +2,35 @@ package br.uneb.astrojumper.tiles;
 
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.World;
 
-public class InteractiveTileObject {
+public abstract class InteractiveTileObject extends TileObject {
     public InteractiveTileObject(World world, TiledMap map, MapObject bounds) {
-        BodyDef bodyDef = new BodyDef();
-        FixtureDef fixtureDef = new FixtureDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
+        super(world, map, bounds);
+    }
 
-        if (bounds instanceof RectangleMapObject) {
-            Rectangle rectangle = ((RectangleMapObject) bounds).getRectangle();
-            bodyDef.position.set(
-                (rectangle.getX() + rectangle.getWidth() / 2) / Constants.PIXELS_PER_METER,
-                (rectangle.getY() + rectangle.getHeight() / 2) / Constants.PIXELS_PER_METER
-            );
+    public abstract void colide();
 
-            Body body = world.createBody(bodyDef);
+    public void setCategoryFilter(short filterBit) {
+        Filter filter = new Filter();
+        filter.categoryBits = filterBit;
+        fixture.setFilterData(filter);
+    }
 
-            PolygonShape polygonShape = new PolygonShape();
-            polygonShape.setAsBox(
-                rectangle.getWidth() / 2 / Constants.PIXELS_PER_METER,
-                rectangle.getHeight() / 2 / Constants.PIXELS_PER_METER
-            );
+    public TiledMapTileLayer.Cell getCell() {
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(2);
+        float tileSize = 68f;
 
-            fixtureDef.shape = polygonShape;
-            body.createFixture(fixtureDef);
-            polygonShape.dispose();
-        } else if (bounds instanceof PolygonMapObject) {
-            Polygon polygon = ((PolygonMapObject) bounds).getPolygon();
-            float[] vertices = polygon.getTransformedVertices();
+        int cellX = (int) (body.getPosition().x * Constants.PIXELS_PER_METER / tileSize);
+        int cellY = (int) (body.getPosition().y * Constants.PIXELS_PER_METER / tileSize);
 
-            bodyDef.position.set(0, 0);
-            Body body = world.createBody(bodyDef);
-
-            PolygonShape polygonShape = new PolygonShape();
-            Vector2[] worldVertices = new Vector2[vertices.length / 2];
-
-            for (int i = 0; i < vertices.length / 2; i++) {
-                worldVertices[i] = new Vector2(
-                    vertices[i * 2] / Constants.PIXELS_PER_METER,
-                    vertices[i * 2 + 1] / Constants.PIXELS_PER_METER
-                );
-            }
-
-            polygonShape.set(worldVertices);
-            fixtureDef.shape = polygonShape;
-            body.createFixture(fixtureDef);
-            polygonShape.dispose();
+        if (cellX < 0 || cellX >= layer.getWidth() || cellY < 0 || cellY >= layer.getHeight()) {
+            return null;
         }
+
+        return layer.getCell(cellX, cellY);
     }
 }

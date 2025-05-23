@@ -2,11 +2,10 @@ package br.uneb.astrojumper.screens;
 
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.entities.Astronaut;
-import br.uneb.astrojumper.entities.Meteor;
-import br.uneb.astrojumper.tiles.WorldObjectsCreator;
+import br.uneb.astrojumper.scenes.Hud;
+import br.uneb.astrojumper.tiles.WorldObjectsManager;
+import br.uneb.astrojumper.utils.CollisionListener;
 import br.uneb.astrojumper.utils.Constants;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,7 +25,7 @@ public class PlayScreen implements Screen {
     private final SpriteBatch batch;
     private final OrthographicCamera gameCam;
     private final Viewport viewport;
-//    private final Hud hud;
+    private final Hud hud;
 
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
@@ -35,14 +34,16 @@ public class PlayScreen implements Screen {
     private final Astronaut player;
     private Box2DDebugRenderer box2DRenderer;
 
-    private Meteor meteor;
-
     public PlayScreen(final AstroJumper game, TiledMap mapLevel) {
         this.game = game;
         batch = new SpriteBatch();
         gameCam = new OrthographicCamera();
-        viewport = new FitViewport(Constants.VIRTUAL_WIDTH / Constants.PIXELS_PER_METER, Constants.VIRTUAL_HEIGHT / Constants.PIXELS_PER_METER, gameCam);
-//        hud = new Hud(batch);
+        viewport = new FitViewport(
+            Constants.VIRTUAL_WIDTH / Constants.PIXELS_PER_METER,
+            Constants.VIRTUAL_HEIGHT / Constants.PIXELS_PER_METER,
+            gameCam
+        );
+        hud = new Hud(batch);
 
         map = mapLevel;
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Constants.PIXELS_PER_METER);
@@ -54,9 +55,9 @@ public class PlayScreen implements Screen {
 
         player = new Astronaut(world);
 
-        new WorldObjectsCreator(world, map);
+        new WorldObjectsManager(world, map);
 
-        meteor = new Meteor(900, Constants.VIRTUAL_HEIGHT);
+        world.setContactListener(new CollisionListener());
     }
 
     @Override
@@ -77,14 +78,13 @@ public class PlayScreen implements Screen {
 
         batch.begin();
 
-        meteor.update(delta);
-        meteor.render(batch);
+
 
         batch.end();
 
         viewport.apply();
-//        batch.setProjectionMatrix(hud.stage.getCamera().combined);
-//        hud.stage.draw();
+        batch.setProjectionMatrix(hud.getStage().getCamera().combined);
+        hud.getStage().draw();
     }
 
     @Override
@@ -115,11 +115,11 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         world.dispose();
         box2DRenderer.dispose();
-        // hud.dispose();
+        hud.dispose();
     }
 
     public void update(float delta) {
-        handleInput(delta);
+        player.update(delta);
 
         world.step(1 / 60f, 6, 2);
 
@@ -127,17 +127,5 @@ public class PlayScreen implements Screen {
 
         gameCam.update();
         renderer.setView(gameCam);
-    }
-
-    private void handleInput(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            player.getBody().applyLinearImpulse(new Vector2(0, 4f), player.getBody().getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.getBody().getLinearVelocity().x <= 2) {
-            player.getBody().applyLinearImpulse(new Vector2(0.5f, 0), player.getBody().getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.getBody().getLinearVelocity().x >= -2) {
-            player.getBody().applyLinearImpulse(new Vector2(-0.1f, 0), player.getBody().getWorldCenter(), true);
-        }
     }
 }
