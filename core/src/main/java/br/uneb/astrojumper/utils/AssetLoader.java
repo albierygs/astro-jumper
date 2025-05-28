@@ -3,6 +3,7 @@ package br.uneb.astrojumper.utils;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
@@ -28,6 +29,9 @@ public class AssetLoader {
         // carregando os sons
         manager.load("sounds/meteor-impact.mp3", Sound.class);
 
+        //carregando as fontes
+        manager.load("fonts/orbitron.fnt", BitmapFont.class);
+
         manager.finishLoading();
     }
 
@@ -39,6 +43,8 @@ public class AssetLoader {
             path = "maps/";
         } else if (type == Sound.class) {
             path = "sounds/";
+        } else if (type == BitmapFont.class) {
+            path = "fonts/";
         }
         return manager.get(path + fileName, type);
     }
