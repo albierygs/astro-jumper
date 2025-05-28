@@ -1,7 +1,6 @@
 package br.uneb.astrojumper.tiles;
 
 import br.uneb.astrojumper.utils.Constants;
-import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -11,18 +10,29 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
+// classe abstrata para todos os tiles do mapa
 public abstract class TileObject {
-    protected Fixture fixture;
-    protected Map map;
+    protected World world;
+    protected TiledMap map;
+    protected MapObject bounds;
     protected Body body;
+    protected Fixture fixture;
 
     public TileObject(World world, TiledMap map, MapObject bounds) {
+        this.world = world;
         this.map = map;
+        this.bounds = bounds;
 
+        // configurações do body do tile
         BodyDef bodyDef = new BodyDef();
         FixtureDef fixtureDef = new FixtureDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
+        // definindo os filtros de colisão do tile
+        fixtureDef.filter.categoryBits = Constants.GROUND_BIT;
+        fixtureDef.filter.maskBits = Constants.PLAYER_BIT | Constants.METEOR_BIT | Constants.RAY_BIT;
+
+        // configurações da forma do tile
         if (bounds instanceof RectangleMapObject) {
             Rectangle rectangle = ((RectangleMapObject) bounds).getRectangle();
             bodyDef.position.set(
@@ -40,10 +50,9 @@ public abstract class TileObject {
 
             fixtureDef.shape = polygonShape;
             fixture = body.createFixture(fixtureDef);
-
             polygonShape.dispose();
-        } else if (bounds instanceof PolygonMapObject) {
 
+        } else if (bounds instanceof PolygonMapObject) {
             Polygon polygon = ((PolygonMapObject) bounds).getPolygon();
             float[] vertices = polygon.getTransformedVertices();
 
@@ -63,11 +72,26 @@ public abstract class TileObject {
             polygonShape.set(worldVertices);
             fixtureDef.shape = polygonShape;
             fixture = body.createFixture(fixtureDef);
-
             polygonShape.dispose();
+        }
+
+        if (fixture != null) {
+            fixture.setUserData(this);
         }
     }
 
-    public abstract void colide();
+    public Body getBody() {
+        return body;
+    }
+
+    public Fixture getFixture() {
+        return fixture;
+    }
+
+    public void setCategoryFilter(short filterBit) {
+        Filter filter = new Filter();
+        filter.categoryBits = filterBit;
+        fixture.setFilterData(filter);
+    }
 }
 

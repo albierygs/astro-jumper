@@ -23,6 +23,7 @@ public class AssetLoader {
         manager.load("textures/explosion.png", Texture.class);
         manager.load("textures/meteor.png", Texture.class);
         manager.load("textures/pincer.png", Texture.class);
+        manager.load("textures/bolt-sheet.png", Texture.class);
 
         // carregando os sons
         manager.load("sounds/meteor-impact.mp3", Sound.class);

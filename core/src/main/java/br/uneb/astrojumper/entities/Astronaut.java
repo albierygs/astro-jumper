@@ -27,7 +27,7 @@ public class Astronaut extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(10 / Constants.PIXELS_PER_METER);
         fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
-        fixtureDef.filter.maskBits = Constants.DEFAULT_BIT | Constants.STAR_BIT;
+        fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.RAY_BIT | Constants.METEOR_BIT | Constants.DAMAGE_BIT | Constants.FINAL_SPACESHIP_BIT;
 
         fixtureDef.shape = shape;
         Fixture fixture = body.createFixture(fixtureDef);

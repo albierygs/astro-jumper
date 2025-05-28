@@ -3,6 +3,7 @@ package br.uneb.astrojumper.screens;
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.entities.Astronaut;
 import br.uneb.astrojumper.scenes.Hud;
+import br.uneb.astrojumper.tiles.MeteorManager;
 import br.uneb.astrojumper.tiles.WorldObjectsManager;
 import br.uneb.astrojumper.utils.CollisionListener;
 import br.uneb.astrojumper.utils.Constants;
@@ -34,6 +35,9 @@ public class PlayScreen implements Screen {
     private final Astronaut player;
     private Box2DDebugRenderer box2DRenderer;
 
+    private WorldObjectsManager worldObjectsManager;
+    private MeteorManager meteorManager;
+
     public PlayScreen(final AstroJumper game, TiledMap mapLevel) {
         this.game = game;
         batch = new SpriteBatch();
@@ -55,7 +59,9 @@ public class PlayScreen implements Screen {
 
         player = new Astronaut(world);
 
-        new WorldObjectsManager(world, map);
+        worldObjectsManager = new WorldObjectsManager(world, map);
+        meteorManager = new MeteorManager(world, map);
+        meteorManager.loadTiledPositions(map);
 
         world.setContactListener(new CollisionListener());
     }
@@ -70,19 +76,26 @@ public class PlayScreen implements Screen {
         // Draw your screen here. "delta" is the time since last render in seconds.
         update(delta);
 
+        meteorManager.update(delta);
+
         ScreenUtils.clear(Color.BLACK);
+
+        viewport.apply();
+
+        gameCam.update();
 
         renderer.render();
 
-        box2DRenderer.render(world, gameCam.combined);
-
+        batch.setProjectionMatrix(gameCam.combined);
         batch.begin();
 
-
+        worldObjectsManager.render(batch);
+        meteorManager.render(batch);
 
         batch.end();
 
-        viewport.apply();
+        box2DRenderer.render(world, gameCam.combined);
+
         batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
     }
@@ -116,6 +129,7 @@ public class PlayScreen implements Screen {
         world.dispose();
         box2DRenderer.dispose();
         hud.dispose();
+        worldObjectsManager.dispose();
     }
 
     public void update(float delta) {
@@ -127,5 +141,7 @@ public class PlayScreen implements Screen {
 
         gameCam.update();
         renderer.setView(gameCam);
+
+        worldObjectsManager.update(delta);
     }
 }
