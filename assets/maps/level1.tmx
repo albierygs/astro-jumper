@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="12" nextobjectid="100">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="13" nextobjectid="107">
  <tileset firstgid="1" source="assets/platformerPack-industrial-tilesheet.tsx"/>
+ <tileset firstgid="113" source="assets/bolt.tsx"/>
  <imagelayer id="3" name="background" repeatx="1">
   <image source="assets/background-geometry-dash.png" width="3840" height="1240"/>
  </imagelayer>
@@ -9,7 +10,7 @@
  </imagelayer>
  <layer id="1" name="graphics" width="60" height="10">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFgwWYALHTQDuCRsAFje/EMDT8GkiGmBMDdv+ZUMtRQwDgCoOhAkwYMOPLhQEzHcfQxzkowI1EcXYgNgRiIyA2RhKHiVGKkc1kI9k3qMATiL2A2JtM/SC/slLoBlIAyC5K/RxKpj6YX+ntX2x+Rs4X5nj0MwIxExAzAzELiXxWJGxCJ4xsJyMZGADpdBGg
+   eJxjYBjcoHCgHUBHYALETgPtCBoBFzS+E8PQ8GsgGWJODNj9Z0ItRw0BgCsMhgowYcCMLxcGzHQcQx/noAA3EsXZgdgQiI2A2BhJHCZGKUY2k41k36ACTyD2AmJvMvWD/MpKoRtIASC7KPVzKJn6YH6lt3+x+Rk5X5jj0c8IxExAzAzELCTyWZGwCZ0wsp2MZGAAxnASEQ==
   </data>
  </layer>
  <objectgroup id="11" name="ground">
@@ -48,8 +49,8 @@
   <object id="67" x="2652" y="96" width="68" height="40"/>
   <object id="68" x="3400" y="571" width="68" height="40"/>
  </objectgroup>
- <objectgroup id="8" name="stars">
-  <object id="70" x="2729.5" y="15" width="46" height="47.5"/>
+ <objectgroup id="8" name="rays">
+  <object id="106" x="2738" y="14" width="32" height="40"/>
  </objectgroup>
  <objectgroup id="7" name="collision">
   <object id="62" x="2448" y="340" width="68" height="68"/>
@@ -57,7 +58,7 @@
  <objectgroup id="10" name="final">
   <object id="71" x="3672" y="408" width="204" height="204"/>
  </objectgroup>
- <imagelayer id="9" name="star1" offsetx="2724" offsety="14">
-  <image source="assets/star.png" width="55" height="55"/>
- </imagelayer>
+ <objectgroup id="12" name="meteor-spawns">
+  <object id="104" x="554.667" y="10" width="17.3333" height="12.1212"/>
+ </objectgroup>
 </map>
