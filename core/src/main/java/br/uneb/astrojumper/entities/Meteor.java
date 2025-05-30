@@ -1,5 +1,6 @@
 package br.uneb.astrojumper.entities;
 
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.tiles.ITileObject;
 import br.uneb.astrojumper.tiles.TileObject;
 import br.uneb.astrojumper.utils.AssetLoader;
@@ -10,12 +11,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
 
 public class Meteor extends TileObject implements ITileObject {
     private static final float FALL_VELOCITY_METER = -5f; // Ajustada para ser mais visível
@@ -26,8 +25,8 @@ public class Meteor extends TileObject implements ITileObject {
     private boolean finished;
     private Sound impactSound;
 
-    public Meteor(World world, TiledMap map, Vector2 initialPixelPosition) {
-        super(world, map, new RectangleMapObject(
+    public Meteor(PlayScreen playScreen, Vector2 initialPixelPosition) {
+        super(playScreen, new RectangleMapObject(
             initialPixelPosition.x,
             initialPixelPosition.y,
             AssetLoader.get("meteor.png", Texture.class).getWidth(),
@@ -50,8 +49,8 @@ public class Meteor extends TileObject implements ITileObject {
 
         // configurações da forma do meteoro
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((meteorTexture.getWidth() / 2f) / Constants.PIXELS_PER_METER,
-            (meteorTexture.getHeight() / 2f) / Constants.PIXELS_PER_METER
+        shape.setAsBox((explosionTexture.getWidth() / 8f / 2f) / Constants.PIXELS_PER_METER,
+            (explosionTexture.getHeight() / 2f) / Constants.PIXELS_PER_METER
         );
 
         FixtureDef fdef = new FixtureDef();
@@ -123,8 +122,8 @@ public class Meteor extends TileObject implements ITileObject {
 
     @Override
     public void dispose() {
-        if (body != null && world != null) {
-            world.destroyBody(body);
+        if (body != null && playScreen.getWorld() != null) {
+            playScreen.getWorld().destroyBody(body);
             body = null;
         }
     }

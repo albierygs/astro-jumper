@@ -1,5 +1,6 @@
 package br.uneb.astrojumper.scenes;
 
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.graphics.Color;
@@ -32,10 +33,10 @@ public class Hud implements Disposable {
     Label astrojumperLabel;
 
 
-    public Hud(final SpriteBatch batch) {
-      worldTimer = 300;
-      timeCount = (float) 0;
-      score = 0;
+    public Hud(SpriteBatch batch, PlayScreen playScreen) {
+        worldTimer = 300;
+        timeCount = (float) 0;
+        score = 0;
 
         viewport = new FitViewport(Constants.VIRTUAL_WIDTH, Constants.VIRTUAL_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -70,10 +71,14 @@ public class Hud implements Disposable {
         stage.addActor(table);
     }
 
-
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    // atualiza quantos raios foram coletados
+    public void collectRay() {
+        System.out.println("Mais um raio");
     }
 
     public Stage getStage() {

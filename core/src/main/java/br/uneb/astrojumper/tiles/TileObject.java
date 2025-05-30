@@ -1,5 +1,6 @@
 package br.uneb.astrojumper.tiles;
 
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
@@ -12,15 +13,16 @@ import com.badlogic.gdx.physics.box2d.*;
 
 // classe abstrata para todos os tiles do mapa
 public abstract class TileObject {
-    protected World world;
-    protected TiledMap map;
+    protected PlayScreen playScreen;
     protected MapObject bounds;
     protected Body body;
     protected Fixture fixture;
 
-    public TileObject(World world, TiledMap map, MapObject bounds) {
-        this.world = world;
-        this.map = map;
+    public TileObject(PlayScreen playScreen, MapObject bounds) {
+        this.playScreen = playScreen;
+
+        World world = playScreen.getWorld();
+        TiledMap map = playScreen.getMap();
         this.bounds = bounds;
 
         // configurações do body do tile

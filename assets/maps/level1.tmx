@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="13" nextobjectid="107">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="13" nextobjectid="108">
  <tileset firstgid="1" source="assets/platformerPack-industrial-tilesheet.tsx"/>
  <tileset firstgid="113" source="assets/bolt.tsx"/>
  <imagelayer id="3" name="background" repeatx="1">

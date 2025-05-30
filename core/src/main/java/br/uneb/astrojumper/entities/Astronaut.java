@@ -1,5 +1,6 @@
 package br.uneb.astrojumper.entities;
 
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,11 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Astronaut extends Sprite {
-    private final World world;
+    private PlayScreen playScreen;
     private Body body;
+    private int remainingLifes;
+    private boolean takingDamage;
 
-    public Astronaut(World world) {
-        this.world = world;
+    public Astronaut(PlayScreen playScreen) {
+        this.playScreen = playScreen;
+        remainingLifes = 3;
+        takingDamage = false;
         defineAstronaut();
     }
 
@@ -21,7 +26,7 @@ public class Astronaut extends Sprite {
         bodyDef.position.set(500 / Constants.PIXELS_PER_METER, 100 / Constants.PIXELS_PER_METER);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
-        body = world.createBody(bodyDef);
+        body = playScreen.getWorld().createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
@@ -48,6 +53,26 @@ public class Astronaut extends Sprite {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && this.getBody().getLinearVelocity().x >= -2) {
             this.getBody().applyLinearImpulse(new Vector2(-0.1f, 0), this.getBody().getWorldCenter(), true);
         }
+    }
+
+    public void receiveDamage(float upwardImpulse, float horizontalImpulse) {
+        if (!takingDamage) {
+            remainingLifes--;
+            takingDamage = true;
+            this.body.applyLinearImpulse(new Vector2(horizontalImpulse, upwardImpulse), this.body.getWorldCenter(), true);
+
+            if (isDead()) {
+                playScreen.setGameOver(true);
+            }
+        }
+    }
+
+    public void resetDamageState() {
+        this.takingDamage = false;
+    }
+
+    public boolean isDead() {
+        return remainingLifes <= 0;
     }
 
     public Body getBody() {

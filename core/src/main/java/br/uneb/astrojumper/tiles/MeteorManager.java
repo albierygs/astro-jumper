@@ -1,16 +1,15 @@
 package br.uneb.astrojumper.tiles;
 
 import br.uneb.astrojumper.entities.Meteor;
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Random;
@@ -22,20 +21,19 @@ public class MeteorManager {
     private Array<Vector2> spawnPositions;
     private Random random;
     private float timeToNextSpawn;
-    private World world;
-    private TiledMap map;
+    private PlayScreen playScreen;
 
-    public MeteorManager(World world, TiledMap map) {
-        this.world = world;
-        this.map = map;
+    public MeteorManager(PlayScreen playScreen) {
+        this.playScreen = playScreen;
         activeMeteors = new Array<>();
         spawnPositions = new Array<>();
         random = new Random();
         timeToNextSpawn = SPAWN_INTERVAL;
+        loadTiledPositions();
     }
 
-    public void loadTiledPositions(TiledMap tiledMap) {
-        MapLayer meteorsLayer = tiledMap.getLayers().get("meteor-spawns");
+    public void loadTiledPositions() {
+        MapLayer meteorsLayer = playScreen.getMap().getLayers().get("meteor-spawns");
         if (meteorsLayer == null) {
             return;
         }
@@ -56,7 +54,7 @@ public class MeteorManager {
             meteor.update(deltaTime);
 
             if (meteor.isFinished()) {
-                world.destroyBody(meteor.body);
+                playScreen.getWorld().destroyBody(meteor.body);
                 activeMeteors.removeIndex(i);
             }
         }
@@ -70,7 +68,7 @@ public class MeteorManager {
 
     private void spawnMeteor() {
         Vector2 spawnPosition = spawnPositions.get(random.nextInt(spawnPositions.size));
-        Meteor newMeteor = new Meteor(world, map, spawnPosition);
+        Meteor newMeteor = new Meteor(playScreen, spawnPosition);
         activeMeteors.add(newMeteor);
     }
 

@@ -38,8 +38,14 @@ public class PlayScreen implements Screen {
     private WorldObjectsManager worldObjectsManager;
     private MeteorManager meteorManager;
 
+    private boolean gameOver;
+    private boolean completed;
+
     public PlayScreen(final AstroJumper game, TiledMap mapLevel) {
         this.game = game;
+        this.gameOver = false;
+        this.completed = false;
+
         batch = new SpriteBatch();
         gameCam = new OrthographicCamera();
         viewport = new FitViewport(
@@ -47,7 +53,7 @@ public class PlayScreen implements Screen {
             Constants.VIRTUAL_HEIGHT / Constants.PIXELS_PER_METER,
             gameCam
         );
-        hud = new Hud(batch);
+        hud = new Hud(batch, this);
 
         map = mapLevel;
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Constants.PIXELS_PER_METER);
@@ -57,11 +63,10 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         box2DRenderer = new Box2DDebugRenderer();
 
-        player = new Astronaut(world);
+        player = new Astronaut(this);
 
-        worldObjectsManager = new WorldObjectsManager(world, map);
-        meteorManager = new MeteorManager(world, map);
-        meteorManager.loadTiledPositions(map);
+        worldObjectsManager = new WorldObjectsManager(this);
+        meteorManager = new MeteorManager(this);
 
         world.setContactListener(new CollisionListener());
     }
@@ -75,6 +80,14 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
         update(delta);
+
+        if (gameOver && !completed) {
+            game.setScreen(new LoseLevelScreen(game));
+            return;
+        } else if (gameOver && completed) {
+            game.setScreen(new EndLevelScreen(game));
+            return;
+        }
 
         meteorManager.update(delta);
 
@@ -133,15 +146,41 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float delta) {
-        player.update(delta);
+        if (!gameOver && !completed) {
+            player.update(delta);
 
-        world.step(1 / 60f, 6, 2);
+            world.step(1 / 60f, 6, 2);
 
-        gameCam.position.x = player.getBody().getPosition().x;
+            gameCam.position.x = player.getBody().getPosition().x;
 
-        gameCam.update();
-        renderer.setView(gameCam);
+            gameCam.update();
+            renderer.setView(gameCam);
 
-        worldObjectsManager.update(delta);
+            worldObjectsManager.update(delta);
+        }
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public Astronaut getPlayer() {
+        return player;
+    }
+
+    public Hud getHud() {
+        return hud;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

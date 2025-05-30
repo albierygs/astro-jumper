@@ -1,5 +1,6 @@
 package br.uneb.astrojumper.entities;
 
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.tiles.ITileObject;
 import br.uneb.astrojumper.tiles.TileObject;
 import br.uneb.astrojumper.utils.AssetLoader;
@@ -10,12 +11,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.World;
 
 public class Ray extends TileObject implements ITileObject {
     private Animation<TextureRegion> animation;
@@ -24,8 +23,8 @@ public class Ray extends TileObject implements ITileObject {
     private float stateTime;
     private Vector2 position;
 
-    public Ray(World world, TiledMap map, MapObject bounds) {
-        super(world, map, bounds);
+    public Ray(PlayScreen playScreen, MapObject bounds) {
+        super(playScreen, bounds);
 
         // configurações do body do raio
         body.setType(BodyDef.BodyType.StaticBody);
@@ -100,10 +99,11 @@ public class Ray extends TileObject implements ITileObject {
 
     @Override
     public void colide() {
+        playScreen.getHud().collectRay();
         collect();
 
         // removendo o tile do mapa após a colisão
-        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(2);
+        TiledMapTileLayer layer = (TiledMapTileLayer) playScreen.getMap().getLayers().get(2);
         if (layer != null && bounds instanceof RectangleMapObject) {
             Rectangle rect = ((RectangleMapObject) bounds).getRectangle();
             int cellX = (int) (rect.getX() / layer.getTileWidth());
@@ -118,6 +118,6 @@ public class Ray extends TileObject implements ITileObject {
 
     @Override
     public void dispose() {
-        if (body != null) world.destroyBody(body);
+        if (body != null) playScreen.getWorld().destroyBody(body);
     }
 }

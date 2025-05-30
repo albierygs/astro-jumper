@@ -1,25 +1,27 @@
 package br.uneb.astrojumper.tiles;
 
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.World;
 
 public class FinalSpaceship extends TileObject implements ITileObject {
 
-    public FinalSpaceship(World world, TiledMap map, MapObject bounds) {
-        super(world, map, bounds);
+    public FinalSpaceship(PlayScreen playScreen, MapObject bounds) {
+        super(playScreen, bounds);
         body.setType(BodyDef.BodyType.StaticBody);
 
         fixture.getFilterData().categoryBits = Constants.FINAL_SPACESHIP_BIT;
         fixture.getFilterData().maskBits = Constants.PLAYER_BIT;
     }
 
+    // termina a fase
     @Override
     public void colide() {
-        System.out.println("Colisão nave");
+        setCategoryFilter(Constants.DESTROYED_BIT);
+        playScreen.setGameOver(true);
+        playScreen.setCompleted(true);
     }
 
     @Override

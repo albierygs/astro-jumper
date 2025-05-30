@@ -2,6 +2,7 @@ package br.uneb.astrojumper.tiles;
 
 import br.uneb.astrojumper.entities.Meteor;
 import br.uneb.astrojumper.entities.Ray;
+import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.tiles.factories.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayer;
@@ -20,7 +21,10 @@ public class WorldObjectsManager {
     // mapa dos nomes das camadas e suas fábricas
     private Map<String, TileFactory> tileFactories;
 
-    public WorldObjectsManager(World world, TiledMap map) {
+    public WorldObjectsManager(PlayScreen playScreen) {
+        TiledMap map = playScreen.getMap();
+        World world = playScreen.getWorld();
+
         tileObjects = new Array<>();
         tileFactories = new HashMap<>();
 
@@ -42,12 +46,12 @@ public class WorldObjectsManager {
             TileFactory factory = tileFactories.get(layer.getName().toLowerCase());
             if (factory != null) {
                 for (MapObject object : layer.getObjects()) {
-                    ITileObject tile = factory.createTile(world, map, object);
+                    ITileObject tile = factory.createTile(playScreen, object);
                     tileObjects.add(tile);
                 }
             } else {
                 for (MapObject object : layer.getObjects()) {
-                    ITileObject tile = new StaticTileFactory().createTile(world, map, object);
+                    ITileObject tile = new StaticTileFactory().createTile(playScreen, object);
                     tileObjects.add(tile);
                 }
             }
