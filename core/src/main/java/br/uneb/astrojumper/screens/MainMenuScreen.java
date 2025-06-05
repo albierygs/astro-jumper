@@ -3,34 +3,29 @@ package br.uneb.astrojumper.screens;
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class MainMenuScreen implements Screen {
 
@@ -53,13 +48,13 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
-        background = new Texture(Gdx.files.internal("textures/background_menu.png"));
+        background = AssetLoader.get("background_menu.png", Texture.class);
         batch = new SpriteBatch();
 
         skin = new Skin();
 
         // Fonte futurista
-        BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/Neuropol.fnt"));
+        BitmapFont font = AssetLoader.get("Neuropol.fnt", BitmapFont.class);
         skin.add("default-font", font);
 
         // Criar botão programaticamente (sem PNG)
@@ -118,8 +113,8 @@ public class MainMenuScreen implements Screen {
         table.add(exitButton).width(160).height(45).padBottom(15).row();
 
         // Som
-        clickSound = Gdx.audio.newSound(Gdx.files.internal("sounds/click.wav"));
-        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/menu_music.mp3"));
+        clickSound = AssetLoader.get("click.wav", Sound.class);
+        menuMusic = AssetLoader.get("menu_music.mp3", Music.class);
         menuMusic.setLooping(true);
         menuMusic.setVolume(0.5f);
         menuMusic.play();

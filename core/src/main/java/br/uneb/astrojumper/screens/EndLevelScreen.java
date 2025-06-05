@@ -46,7 +46,7 @@ public class EndLevelScreen implements Screen {
         batch.setProjectionMatrix(gameCam.combined);
         batch.begin();
 
-        font.draw(batch, "Parabéns vagabundo", 3f, 3f);
+        font.draw(batch, "Parabéns", 3f, 3f);
 
         batch.end();
     }

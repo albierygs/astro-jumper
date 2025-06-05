@@ -82,10 +82,16 @@ public class PlayScreen implements Screen {
         update(delta);
 
         if (gameOver && !completed) {
-            game.setScreen(new LoseLevelScreen(game));
-            return;
-        } else if (gameOver && completed) {
+            player.update(delta);
+
+            if (player.isDeadAnimationFinished()) {
+                game.setScreen(new GameOverScreen(game));
+                dispose();
+                return;
+            }
+        } else if (completed) {
             game.setScreen(new EndLevelScreen(game));
+            dispose();
             return;
         }
 
@@ -104,6 +110,7 @@ public class PlayScreen implements Screen {
 
         worldObjectsManager.render(batch);
         meteorManager.render(batch);
+        player.draw(batch);
 
         batch.end();
 
@@ -139,14 +146,15 @@ public class PlayScreen implements Screen {
         // Destroy screen's assets here.
         map.dispose();
         renderer.dispose();
-        world.dispose();
-        box2DRenderer.dispose();
         hud.dispose();
         worldObjectsManager.dispose();
+        player.dispose();
+        world.dispose();
+        box2DRenderer.dispose();
     }
 
     public void update(float delta) {
-        if (!gameOver && !completed) {
+        if (!completed) {
             player.update(delta);
 
             world.step(1 / 60f, 6, 2);
