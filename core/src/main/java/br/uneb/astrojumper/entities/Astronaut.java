@@ -1,10 +1,15 @@
 package br.uneb.astrojumper.entities;
 
 import br.uneb.astrojumper.screens.PlayScreen;
+import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -14,11 +19,91 @@ public class Astronaut extends Sprite {
     private int remainingLifes;
     private boolean takingDamage;
 
+    private State currentState;
+
+    private State previousState;
+    private Animation<TextureRegion> astronautIdle;
+    private Animation<TextureRegion> astronautWalk;
+    private Animation<TextureRegion> astronautJump;
+    private Animation<TextureRegion> astronautFalling;
+    private Animation<TextureRegion> astronautDead;
+    private float stateTimer;
+    private boolean runningRight;
+
     public Astronaut(PlayScreen playScreen) {
         this.playScreen = playScreen;
         remainingLifes = 3;
         takingDamage = false;
+
+        setBounds(0, 0, 48 / Constants.PIXELS_PER_METER, 48 / Constants.PIXELS_PER_METER);
+
         defineAstronaut();
+        defineAnimations();
+
+        currentState = State.STANDING;
+        previousState = State.STANDING;
+        stateTimer = 0;
+        runningRight = true;
+    }
+
+    private void defineAnimations() {
+        // animação astronauta parado
+        astronautIdle = createAnimation(
+            AssetLoader.get("astronaut-idle.png", Texture.class),
+            12,
+            0,
+            0.1f
+        );
+
+        // animação astronauta morte
+        astronautDead = createAnimation(
+            AssetLoader.get("astronaut-dead.png", Texture.class),
+            15,
+            0,
+            0.1f
+        );
+
+        // animação astronauta pulando
+        astronautJump = createAnimation(
+            AssetLoader.get("astronaut-jump.png", Texture.class),
+            5,
+            0,
+            0.5f
+        );
+
+        // animação astronauta caindo
+        astronautFalling = createAnimation(
+            AssetLoader.get("astronaut-jump.png", Texture.class),
+            10,
+            5,
+            0.5f
+        );
+
+        // animação astronauta andando
+        astronautWalk = createAnimation(
+            AssetLoader.get("astronaut-walk.png", Texture.class),
+            8,
+            0,
+            0.1f
+        );
+    }
+
+    private Animation<TextureRegion> createAnimation(Texture texture, int finalFrame, int startFrame, float duration) {
+        int frameWidth = 64;
+        int frameHeight = 64;
+
+        TextureRegion[][] tmp = TextureRegion.split(texture, frameWidth, frameHeight);
+
+        TextureRegion[] frames = new TextureRegion[finalFrame];
+
+        int index = 0;
+        for (int i = 0; i < 1; i++) {
+            for (int j = startFrame; j < finalFrame; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        return new Animation<TextureRegion>(duration, frames);
     }
 
     private void defineAstronaut() {
@@ -30,7 +115,7 @@ public class Astronaut extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(10 / Constants.PIXELS_PER_METER);
+        shape.setRadius(25 / Constants.PIXELS_PER_METER);
         fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
         fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.RAY_BIT | Constants.METEOR_BIT | Constants.DAMAGE_BIT | Constants.FINAL_SPACESHIP_BIT;
 
@@ -40,19 +125,92 @@ public class Astronaut extends Sprite {
     }
 
     public void update(float deltaTime) {
-        handleInput(deltaTime);
+        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(deltaTime));
+        if (!isDead()) {
+            handleInput(deltaTime);
+        }
+    }
+
+    public TextureRegion getFrame(float delta) {
+        currentState = getState();
+        TextureRegion region;
+
+        if (currentState == previousState) {
+            stateTimer += delta;
+        } else {
+            stateTimer = 0;
+        }
+
+        switch (currentState) {
+            case JUMPING:
+                region = astronautJump.getKeyFrame(stateTimer);
+                break;
+            case RUNNING:
+                region = astronautWalk.getKeyFrame(stateTimer, true); // true para loop
+                break;
+            case FALLING:
+                region = astronautFalling.getKeyFrame(stateTimer);
+                break;
+            case DEAD:
+                region = astronautDead.getKeyFrame(stateTimer);
+                break;
+            case STANDING:
+            default:
+                region = astronautIdle.getKeyFrame(stateTimer, true); // true para loop
+                break;
+        }
+
+        // Vira o sprite se estiver correndo para a esquerda
+        if ((body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
+            region.flip(true, false);
+            runningRight = false;
+        }
+        // Vira o sprite de volta para a direita
+        else if ((body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
+            region.flip(true, false);
+            runningRight = true;
+        }
+
+        System.out.println(currentState + " " + previousState + " " + stateTimer);
+
+        previousState = currentState;
+
+        System.out.println(currentState + " " + previousState + " " + stateTimer);
+        return region;
+    }
+
+    public State getState() {
+        if (isDead()) {
+            return State.DEAD;
+        }
+        if (body.getLinearVelocity().y > 0) { // Pulando
+            return State.JUMPING;
+        }
+        if (body.getLinearVelocity().y < 0) { // Caindo
+            return State.FALLING;
+        }
+        if (body.getLinearVelocity().x != 0) { // Correndo
+            return State.RUNNING;
+        }
+        return State.STANDING; // Parado
     }
 
     private void handleInput(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            this.getBody().applyLinearImpulse(new Vector2(0, 4f), this.getBody().getWorldCenter(), true);
-        }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && this.getBody().getLinearVelocity().x <= 2) {
-            this.getBody().applyLinearImpulse(new Vector2(1.5f, 0), this.getBody().getWorldCenter(), true);
+            this.getBody().applyLinearImpulse(new Vector2(2.0f, 0), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && this.getBody().getLinearVelocity().x >= -2) {
             this.getBody().applyLinearImpulse(new Vector2(-0.1f, 0), this.getBody().getWorldCenter(), true);
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && (currentState == State.STANDING || currentState == State.RUNNING)) {
+            this.getBody().applyLinearImpulse(new Vector2(0, 4f), this.getBody().getWorldCenter(), true);
+        }
+    }
+
+    @Override
+    public void draw(Batch batch) {
+        super.draw(batch);
     }
 
     public void receiveDamage(float upwardImpulse, float horizontalImpulse) {
@@ -63,6 +221,7 @@ public class Astronaut extends Sprite {
 
             if (isDead()) {
                 playScreen.setGameOver(true);
+                body.setLinearVelocity(new Vector2(0, 0));
             }
         }
     }
@@ -71,9 +230,22 @@ public class Astronaut extends Sprite {
         this.takingDamage = false;
     }
 
+    public void dispose() {
+        if (body != null && playScreen.getWorld() != null) {
+            playScreen.getWorld().destroyBody(body);
+            body = null;
+        }
+    }
+
+    public boolean isDeadAnimationFinished() {
+        return astronautDead.isAnimationFinished(stateTimer);
+    }
+
     public boolean isDead() {
         return remainingLifes <= 0;
     }
+
+    public enum State {FALLING, JUMPING, STANDING, RUNNING, DEAD}
 
     public Body getBody() {
         return body;

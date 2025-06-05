@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class LoseLevelScreen implements Screen {
+public class GameOverScreen implements Screen {
 
     private AstroJumper game;
     private SpriteBatch batch;
@@ -20,7 +20,7 @@ public class LoseLevelScreen implements Screen {
     private Viewport viewport;
     private BitmapFont font;
 
-    public LoseLevelScreen(AstroJumper game) {
+    public GameOverScreen(AstroJumper game) {
         this.game = game;
         this.batch = new SpriteBatch();
         this.gameCam = new OrthographicCamera();
@@ -46,7 +46,7 @@ public class LoseLevelScreen implements Screen {
         batch.setProjectionMatrix(gameCam.combined);
         batch.begin();
 
-        font.draw(batch, "Morreu vagabundo", 3f, 3f);
+        font.draw(batch, "Morreu", 3f, 3f);
 
         batch.end();
     }

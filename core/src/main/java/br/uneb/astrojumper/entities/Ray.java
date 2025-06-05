@@ -5,6 +5,7 @@ import br.uneb.astrojumper.tiles.ITileObject;
 import br.uneb.astrojumper.tiles.TileObject;
 import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -22,6 +23,7 @@ public class Ray extends TileObject implements ITileObject {
     private boolean finished;
     private float stateTime;
     private Vector2 position;
+    private Sound collectSound;
 
     public Ray(PlayScreen playScreen, MapObject bounds) {
         super(playScreen, bounds);
@@ -54,6 +56,8 @@ public class Ray extends TileObject implements ITileObject {
         finished = false;
         collected = false;
 
+        collectSound = AssetLoader.get("ray-collect.mp3", Sound.class);
+
         Rectangle rect = ((RectangleMapObject) bounds).getRectangle();
 
         // posição que o raio vai aparecer
@@ -64,6 +68,7 @@ public class Ray extends TileObject implements ITileObject {
     }
 
     private void collect() {
+        collectSound.play(0.5f);
         collected = true;
         stateTime = 0;
         setCategoryFilter(Constants.DESTROYED_BIT); // destruindo o raio depois da colisão
@@ -118,6 +123,9 @@ public class Ray extends TileObject implements ITileObject {
 
     @Override
     public void dispose() {
-        if (body != null) playScreen.getWorld().destroyBody(body);
+        if (body != null) {
+            playScreen.getWorld().destroyBody(body);
+            body = null;
+        }
     }
 }
