@@ -28,6 +28,7 @@ public class AssetLoader {
         manager.load("textures/pincer.png", Texture.class);
         manager.load("textures/bolt-sheet.png", Texture.class);
         manager.load("textures/background_menu.png", Texture.class);
+        manager.load("textures/background_gameover.png", Texture.class);
 
         // carregando os sons
         manager.load("sounds/meteor-impact.mp3", Sound.class);
@@ -35,6 +36,8 @@ public class AssetLoader {
         manager.load("sounds/click.wav", Sound.class);
         manager.load("sounds/menu_music.mp3", Music.class);
         manager.load("sounds/game-music.mp3", Music.class);
+        manager.load("sounds/GAMEOVER.wav", Music.class);
+
 
         //carregando as fontes
         manager.load("fonts/orbitron.fnt", BitmapFont.class);

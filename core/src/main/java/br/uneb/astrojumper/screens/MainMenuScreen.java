@@ -65,6 +65,7 @@ public class MainMenuScreen implements Screen {
         TextButtonStyle buttonStyle = new TextButtonStyle();
         buttonStyle.up = buttonUp;
         buttonStyle.down = buttonDown;
+
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.DARK_GRAY;
 
@@ -83,8 +84,8 @@ public class MainMenuScreen implements Screen {
 
         Label title = new Label("ASTRO JUMPER", skin, "title");
 
-        TextButton startButton = new TextButton("Entrar", skin);
-        TextButton exitButton = new TextButton("Sair", skin);
+        TextButton startButton = new TextButton("Play", skin);
+        TextButton exitButton = new TextButton("Quit", skin);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -175,7 +176,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        background.dispose();
+       // background.dispose();
         batch.dispose();
         clickSound.dispose();
         menuMusic.dispose();
