@@ -5,7 +5,6 @@ import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -22,7 +21,6 @@ public abstract class TileObject {
         this.playScreen = playScreen;
 
         World world = playScreen.getWorld();
-        TiledMap map = playScreen.getMap();
         this.bounds = bounds;
 
         // configurações do body do tile
@@ -33,6 +31,9 @@ public abstract class TileObject {
         // definindo os filtros de colisão do tile
         fixtureDef.filter.categoryBits = Constants.GROUND_BIT;
         fixtureDef.filter.maskBits = Constants.PLAYER_BIT | Constants.METEOR_BIT | Constants.RAY_BIT;
+
+        fixtureDef.friction = 0.05f;
+        fixtureDef.restitution = 0.0f;
 
         // configurações da forma do tile
         if (bounds instanceof RectangleMapObject) {

@@ -21,6 +21,8 @@ public class WorldObjectsManager {
     // mapa dos nomes das camadas e suas fábricas
     private Map<String, TileFactory> tileFactories;
 
+    private MeteorManager meteorManager;
+
     public WorldObjectsManager(PlayScreen playScreen) {
         TiledMap map = playScreen.getMap();
         World world = playScreen.getWorld();
@@ -38,7 +40,7 @@ public class WorldObjectsManager {
         // Processar camadas do mapa
         for (MapLayer layer : map.getLayers()) {
             // a camada dos meteoros é gerenciado em outra classe
-            if (layer.getName().equalsIgnoreCase("meteor-spawns")) {
+            if (layer.getName().equalsIgnoreCase("meteor-spawns") || layer.getName().equalsIgnoreCase("begin")) {
                 continue;
             }
 
@@ -56,12 +58,15 @@ public class WorldObjectsManager {
                 }
             }
         }
+
+        meteorManager = new MeteorManager(playScreen);
     }
 
     public void render(Batch batch) {
         for (ITileObject tile : tileObjects) {
             tile.render(batch);
         }
+        meteorManager.render(batch);
     }
 
     public void update(float delta) {
@@ -79,6 +84,7 @@ public class WorldObjectsManager {
                 iterator.remove();
             }
         }
+        meteorManager.update(delta);
     }
 
     public void dispose() {

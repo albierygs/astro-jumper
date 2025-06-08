@@ -3,11 +3,12 @@ package br.uneb.astrojumper.screens;
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.entities.Astronaut;
 import br.uneb.astrojumper.scenes.Hud;
-import br.uneb.astrojumper.tiles.MeteorManager;
 import br.uneb.astrojumper.tiles.WorldObjectsManager;
+import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.CollisionListener;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,7 +21,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-/** First screen of the application. Displayed after the application is created. */
 public class PlayScreen implements Screen {
     private final AstroJumper game;
     private final SpriteBatch batch;
@@ -36,7 +36,8 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer box2DRenderer;
 
     private WorldObjectsManager worldObjectsManager;
-    private MeteorManager meteorManager;
+
+    private Music music;
 
     private boolean gameOver;
     private boolean completed;
@@ -66,9 +67,13 @@ public class PlayScreen implements Screen {
         player = new Astronaut(this);
 
         worldObjectsManager = new WorldObjectsManager(this);
-        meteorManager = new MeteorManager(this);
 
         world.setContactListener(new CollisionListener());
+
+        music = AssetLoader.get("game-music.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        music.play();
     }
 
     @Override
@@ -95,8 +100,6 @@ public class PlayScreen implements Screen {
             return;
         }
 
-        meteorManager.update(delta);
-
         ScreenUtils.clear(Color.BLACK);
 
         viewport.apply();
@@ -109,7 +112,6 @@ public class PlayScreen implements Screen {
         batch.begin();
 
         worldObjectsManager.render(batch);
-        meteorManager.render(batch);
         player.draw(batch);
 
         batch.end();
@@ -151,6 +153,7 @@ public class PlayScreen implements Screen {
         player.dispose();
         world.dispose();
         box2DRenderer.dispose();
+        music.dispose();
     }
 
     public void update(float delta) {
