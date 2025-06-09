@@ -1,5 +1,5 @@
 package br.uneb.astrojumper.screens;
-
+import br.uneb.astrojumper.screens.EndLevelScreen;
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.entities.Astronaut;
 import br.uneb.astrojumper.scenes.Hud;
