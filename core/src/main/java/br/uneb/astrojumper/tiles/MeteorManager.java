@@ -3,7 +3,7 @@ package br.uneb.astrojumper.tiles;
 import br.uneb.astrojumper.entities.Meteor;
 import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.utils.Constants;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -67,12 +67,13 @@ public class MeteorManager {
     }
 
     private void spawnMeteor() {
-        Vector2 spawnPosition = spawnPositions.get(random.nextInt(spawnPositions.size));
-        Meteor newMeteor = new Meteor(playScreen, spawnPosition);
-        activeMeteors.add(newMeteor);
+        for (Vector2 position : spawnPositions) {
+            Meteor newMeteor = new Meteor(playScreen, position);
+            activeMeteors.add(newMeteor);
+        }
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(Batch batch) {
         for (Meteor meteor : activeMeteors) {
             meteor.render(batch);
         }

@@ -40,9 +40,9 @@ public class CollisionListener implements ContactListener {
 
             // astronauta recebendo dano
             if (userDataA instanceof Astronaut) {
-                ((Astronaut) userDataA).receiveDamage(4f, -2);
+                ((Astronaut) userDataA).receiveDamage(4f, -1);
             } else {
-                ((Astronaut) userDataB).receiveDamage(4f, -2);
+                ((Astronaut) userDataB).receiveDamage(4f, -1);
             }
 
         } else if ((userDataA instanceof FinalSpaceship && userDataB instanceof Astronaut) ||

@@ -23,8 +23,6 @@ public class AssetLoader {
         manager.load("textures/astronaut-walk.png", Texture.class);
         manager.load("textures/astronaut-jump.png", Texture.class);
         manager.load("textures/astronaut-dead.png", Texture.class);
-        manager.load("textures/bullet.png", Texture.class);
-        manager.load("textures/bullet-impact.png", Texture.class);
         manager.load("textures/explosion.png", Texture.class);
         manager.load("textures/meteor.png", Texture.class);
         manager.load("textures/pincer.png", Texture.class);
@@ -39,6 +37,7 @@ public class AssetLoader {
         manager.load("sounds/ray-collect.mp3", Sound.class);
         manager.load("sounds/click.wav", Sound.class);
         manager.load("sounds/menu_music.mp3", Music.class);
+        manager.load("sounds/game-music.mp3", Music.class);
         manager.load("sounds/GAMEOVER.wav", Music.class);
         manager.load("sounds/VICTORY.mp3", Music.class);
 

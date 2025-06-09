@@ -25,6 +25,8 @@ public class Meteor extends TileObject implements ITileObject {
     private boolean finished;
     private Sound impactSound;
 
+    private Astronaut player;
+
     public Meteor(PlayScreen playScreen, Vector2 initialPixelPosition) {
         super(playScreen, new RectangleMapObject(
             initialPixelPosition.x,
@@ -32,6 +34,8 @@ public class Meteor extends TileObject implements ITileObject {
             AssetLoader.get("meteor.png", Texture.class).getWidth(),
             AssetLoader.get("meteor.png", Texture.class).getHeight()
         ));
+
+        this.player = playScreen.getPlayer();
 
         // configurações do body do meteoro
         body.setType(BodyDef.BodyType.DynamicBody);
@@ -112,7 +116,15 @@ public class Meteor extends TileObject implements ITileObject {
     @Override
     public void colide() {
         if (!exploding) {
-            impactSound.play(0.5f);
+            float distance = this.body.getPosition().dst(player.getBody().getPosition()); // Calcula a distância entre o meteorito e o astronauta
+
+            float maxDistance = 15f; // distância para volume total diminuir
+            float maxVolume = 0.5f; // Volume máximo para o som da explosão
+
+            // Calcula o volume com base na distância
+            float volume = maxVolume * (1 - Math.min(1, distance / maxDistance));
+
+            impactSound.play(volume);
             exploding = true;
             animationTime = 0f;
             body.setLinearVelocity(0, 0); // para o meteoro ao atingir o chão / astronauta

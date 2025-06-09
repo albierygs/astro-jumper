@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -107,8 +108,13 @@ public class Astronaut extends Sprite {
     }
 
     private void defineAstronaut() {
+        float xBeginPosition =
+            ((RectangleMapObject) playScreen.getMap().getLayers().get("begin").getObjects().get(0)).getRectangle().x;
+        float yBeginPosition =
+            ((RectangleMapObject) playScreen.getMap().getLayers().get("begin").getObjects().get(0)).getRectangle().y;
+
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(500 / Constants.PIXELS_PER_METER, 100 / Constants.PIXELS_PER_METER);
+        bodyDef.position.set(xBeginPosition / Constants.PIXELS_PER_METER, yBeginPosition / Constants.PIXELS_PER_METER);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         body = playScreen.getWorld().createBody(bodyDef);
@@ -120,16 +126,24 @@ public class Astronaut extends Sprite {
         fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.RAY_BIT | Constants.METEOR_BIT | Constants.DAMAGE_BIT | Constants.FINAL_SPACESHIP_BIT;
 
         fixtureDef.shape = shape;
+        fixtureDef.friction = 0.05f;
         Fixture fixture = body.createFixture(fixtureDef);
         fixture.setUserData(this);
+
+        body.setLinearDamping(3.5f);
     }
 
     public void update(float deltaTime) {
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(deltaTime));
-        if (!isDead()) {
+
+        if (isDead()) {
+            playScreen.setGameOver(true);
+            body.setLinearVelocity(new Vector2(0, 0));
+        } else {
             handleInput(deltaTime);
         }
+
+        setRegion(getFrame(deltaTime));
     }
 
     public TextureRegion getFrame(float delta) {
@@ -172,11 +186,7 @@ public class Astronaut extends Sprite {
             runningRight = true;
         }
 
-        System.out.println(currentState + " " + previousState + " " + stateTimer);
-
         previousState = currentState;
-
-        System.out.println(currentState + " " + previousState + " " + stateTimer);
         return region;
     }
 
@@ -197,14 +207,14 @@ public class Astronaut extends Sprite {
     }
 
     private void handleInput(float delta) {
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && this.getBody().getLinearVelocity().x <= 2) {
-            this.getBody().applyLinearImpulse(new Vector2(2.0f, 0), this.getBody().getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && this.getBody().getLinearVelocity().x <= 3) {
+            this.getBody().applyLinearImpulse(new Vector2(3.0f - body.getLinearVelocity().x, 0), this.getBody().getWorldCenter(), true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && this.getBody().getLinearVelocity().x >= -2) {
-            this.getBody().applyLinearImpulse(new Vector2(-0.1f, 0), this.getBody().getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && this.getBody().getLinearVelocity().x >= -3) {
+            this.getBody().applyLinearImpulse(new Vector2(-3 - body.getLinearVelocity().x, 0), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && (currentState == State.STANDING || currentState == State.RUNNING)) {
-            this.getBody().applyLinearImpulse(new Vector2(0, 4f), this.getBody().getWorldCenter(), true);
+            this.getBody().applyLinearImpulse(new Vector2(0, 7f), this.getBody().getWorldCenter(), true);
         }
     }
 
@@ -216,13 +226,10 @@ public class Astronaut extends Sprite {
     public void receiveDamage(float upwardImpulse, float horizontalImpulse) {
         if (!takingDamage) {
             remainingLifes--;
+            playScreen.getHud().setLifes(remainingLifes);
             takingDamage = true;
+            this.body.setLinearVelocity(new Vector2(0, 0));
             this.body.applyLinearImpulse(new Vector2(horizontalImpulse, upwardImpulse), this.body.getWorldCenter(), true);
-
-            if (isDead()) {
-                playScreen.setGameOver(true);
-                body.setLinearVelocity(new Vector2(0, 0));
-            }
         }
     }
 
@@ -242,6 +249,10 @@ public class Astronaut extends Sprite {
     }
 
     public boolean isDead() {
+        if (body.getPosition().y < 0) {
+            remainingLifes = 0;
+            playScreen.getHud().setLifes(remainingLifes);
+        }
         return remainingLifes <= 0;
     }
 

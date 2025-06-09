@@ -81,6 +81,10 @@ public class Hud implements Disposable {
         System.out.println("Mais um raio");
     }
 
+    public void setLifes(int n) {
+        System.out.println("Número de vidas " + n);
+    }
+
     public Stage getStage() {
         return stage;
     }
