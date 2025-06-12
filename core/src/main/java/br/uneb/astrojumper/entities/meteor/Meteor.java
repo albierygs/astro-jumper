@@ -1,13 +1,11 @@
-package br.uneb.astrojumper.entities;
+package br.uneb.astrojumper.entities.meteor;
 
 import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.tiles.ITileObject;
 import br.uneb.astrojumper.tiles.TileObject;
 import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -17,25 +15,19 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class Meteor extends TileObject implements ITileObject {
-    private static final float FALL_VELOCITY_METER = -5f; // Ajustada para ser mais visível
-
-    private Animation<TextureRegion> explosionAnimation;
     private float animationTime;
     private boolean exploding;
     private boolean finished;
-    private Sound impactSound;
 
-    private Astronaut player;
+    private BaseMeteor baseMeteor;
 
-    public Meteor(PlayScreen playScreen, Vector2 initialPixelPosition) {
+    public Meteor(PlayScreen playScreen, Vector2 initialPixelPosition, BaseMeteor baseMeteor) {
         super(playScreen, new RectangleMapObject(
             initialPixelPosition.x,
             initialPixelPosition.y,
             AssetLoader.get("meteor.png", Texture.class).getWidth(),
             AssetLoader.get("meteor.png", Texture.class).getHeight()
         ));
-
-        this.player = playScreen.getPlayer();
 
         // configurações do body do meteoro
         body.setType(BodyDef.BodyType.DynamicBody);
@@ -46,12 +38,9 @@ public class Meteor extends TileObject implements ITileObject {
             0
         ); // posição inicial do meteoro
 
-        impactSound = AssetLoader.get("meteor-impact.mp3", Sound.class);
-
-        Texture meteorTexture = AssetLoader.get("meteor.png", Texture.class);
         Texture explosionTexture = AssetLoader.get("explosion.png", Texture.class);
 
-        // configurações da forma do meteoro
+        // configurações da forma da explosão
         PolygonShape shape = new PolygonShape();
         shape.setAsBox((explosionTexture.getWidth() / 8f / 2f) / Constants.PIXELS_PER_METER,
             (explosionTexture.getHeight() / 2f) / Constants.PIXELS_PER_METER
@@ -66,29 +55,17 @@ public class Meteor extends TileObject implements ITileObject {
         fixture.setUserData(this);
         shape.dispose();
 
-        // carregando a animação da explosão
-        int rows = 1;
-        int columns = 8;
-        TextureRegion[][] regions2D = TextureRegion.split(explosionTexture, explosionTexture.getWidth() / columns, explosionTexture.getHeight() / rows);
-
-        TextureRegion[] regions = new TextureRegion[rows * columns];
-        int index = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                regions[index++] = regions2D[i][j];
-            }
-        }
-        explosionAnimation = new Animation<>(0.05f, regions);
-
         exploding = false;
         finished = false;
         animationTime = 0f;
+
+        this.baseMeteor = baseMeteor;
     }
 
     @Override
     public void render(Batch batch) {
         if (exploding) {
-            TextureRegion currentFrame = explosionAnimation.getKeyFrame(animationTime);
+            TextureRegion currentFrame = baseMeteor.getExplosionAnimation().getKeyFrame(animationTime);
             float width = currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER;
             float height = currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER;
             batch.draw(currentFrame, body.getPosition().x - width / 2, body.getPosition().y - height / 2, width, height);
@@ -103,11 +80,11 @@ public class Meteor extends TileObject implements ITileObject {
     @Override
     public void update(float delta) {
         if (!exploding) {
-            body.setLinearVelocity(0, FALL_VELOCITY_METER); // atualiza a posição y do meteoro enquanto ele ainda não
+            body.setLinearVelocity(0, baseMeteor.getFallVelocity()); // atualiza a posição y do meteoro enquanto ele ainda não
             // atingiu o chão / astronauta
         } else {
             animationTime += delta;
-            if (explosionAnimation.isAnimationFinished(animationTime)) {
+            if (baseMeteor.getExplosionAnimation().isAnimationFinished(animationTime)) {
                 finished = true;
             }
         }
@@ -116,15 +93,18 @@ public class Meteor extends TileObject implements ITileObject {
     @Override
     public void colide() {
         if (!exploding) {
-            float distance = this.body.getPosition().dst(player.getBody().getPosition()); // Calcula a distância entre o meteorito e o astronauta
+            if (baseMeteor.getPlayer() != null && baseMeteor.getPlayer().getBody() != null) {
+                float distance = this.body.getPosition().dst(baseMeteor.getPlayer().getBody().getPosition()); // Calcula a distância
+                // entre o meteoro e o astronauta
 
-            float maxDistance = 15f; // distância para volume total diminuir
-            float maxVolume = 0.5f; // Volume máximo para o som da explosão
+                float maxDistance = 15f; // distância para volume total diminuir
+                float maxVolume = 0.5f; // Volume máximo para o som da explosão
 
-            // Calcula o volume com base na distância
-            float volume = maxVolume * (1 - Math.min(1, distance / maxDistance));
+                // Calcula o volume com base na distância
+                float volume = maxVolume * (1 - Math.min(1, distance / maxDistance));
 
-            impactSound.play(volume);
+                baseMeteor.getImpactSound().play(volume);
+            }
             exploding = true;
             animationTime = 0f;
             body.setLinearVelocity(0, 0); // para o meteoro ao atingir o chão / astronauta

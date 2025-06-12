@@ -1,7 +1,8 @@
 package br.uneb.astrojumper.tiles;
 
-import br.uneb.astrojumper.entities.Meteor;
+import br.uneb.astrojumper.entities.FinalSpaceship;
 import br.uneb.astrojumper.entities.Ray;
+import br.uneb.astrojumper.entities.meteor.Meteor;
 import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.tiles.factories.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -22,6 +23,8 @@ public class WorldObjectsManager {
     private Map<String, TileFactory> tileFactories;
 
     private MeteorManager meteorManager;
+
+    private FinalSpaceship finalSpaceship;
 
     public WorldObjectsManager(PlayScreen playScreen) {
         TiledMap map = playScreen.getMap();
@@ -50,6 +53,10 @@ public class WorldObjectsManager {
                 for (MapObject object : layer.getObjects()) {
                     ITileObject tile = factory.createTile(playScreen, object);
                     tileObjects.add(tile);
+
+                    if (tile instanceof FinalSpaceship) {
+                        this.finalSpaceship = (FinalSpaceship) tile;
+                    }
                 }
             } else {
                 for (MapObject object : layer.getObjects()) {
@@ -92,5 +99,9 @@ public class WorldObjectsManager {
             tile.dispose();
         }
         tileObjects.clear();
+    }
+
+    public FinalSpaceship getFinalSpaceship() {
+        return finalSpaceship;
     }
 }

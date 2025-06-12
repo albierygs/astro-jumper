@@ -29,7 +29,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainMenuScreen implements Screen {
 
-    private AstroJumper game;
     private Stage stage;
     private Viewport viewport;
 
@@ -42,7 +41,6 @@ public class MainMenuScreen implements Screen {
     private Skin skin;
 
     public MainMenuScreen(AstroJumper game) {
-        this.game = game;
 
         viewport = new FitViewport(Constants.VIRTUAL_WIDTH, Constants.VIRTUAL_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);

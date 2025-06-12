@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="12" nextobjectid="97">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="12" nextobjectid="98">
  <tileset firstgid="1" source="assets/platformerPack-industrial-tilesheet.tsx"/>
  <tileset firstgid="113" source="assets/bolt.tsx"/>
  <imagelayer id="2" name="background" repeatx="1" repeaty="1">
-  <image source="assets/Stars.png" width="128" height="128"/>
- </imagelayer>
- <imagelayer id="3" name="spaceship" offsetx="12556.1" offsety="436">
-  <image source="assets/spaceship.png" width="110" height="177"/>
+  <image source="assets/background.png" width="128" height="128"/>
  </imagelayer>
  <layer id="4" name="graphics" width="200" height="10">
   <data encoding="base64" compression="zlib">
@@ -102,7 +99,7 @@
   <object id="73" x="3474.67" y="408" width="52" height="68"/>
  </objectgroup>
  <objectgroup id="9" name="final">
-  <object id="52" x="12512" y="408" width="204" height="204"/>
+  <object id="97" x="12600" y="99.6364" width="312" height="512"/>
  </objectgroup>
  <objectgroup id="10" name="meteor-spawns" offsetx="-2.66667" offsety="-1.77636e-15">
   <object id="70" x="3800" y="15.1515"/>

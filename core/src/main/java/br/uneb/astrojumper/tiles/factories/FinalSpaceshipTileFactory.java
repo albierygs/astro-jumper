@@ -1,7 +1,7 @@
 package br.uneb.astrojumper.tiles.factories;
 
+import br.uneb.astrojumper.entities.FinalSpaceship;
 import br.uneb.astrojumper.screens.PlayScreen;
-import br.uneb.astrojumper.tiles.FinalSpaceship;
 import br.uneb.astrojumper.tiles.ITileObject;
 import com.badlogic.gdx.maps.MapObject;
 

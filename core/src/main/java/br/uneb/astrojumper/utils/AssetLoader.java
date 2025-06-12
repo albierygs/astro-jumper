@@ -30,6 +30,7 @@ public class AssetLoader {
         manager.load("textures/background_menu.png", Texture.class);
         manager.load("textures/background_gameover.png", Texture.class);
         manager.load("textures/background_parabens.png", Texture.class);
+        manager.load("textures/spaceship.png", Texture.class);
 
 
         // carregando os sons

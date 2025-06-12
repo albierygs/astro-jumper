@@ -1,10 +1,9 @@
-package br.uneb.astrojumper.utils;
+package br.uneb.astrojumper.tiles;
 
 import br.uneb.astrojumper.entities.Astronaut;
-import br.uneb.astrojumper.entities.Meteor;
+import br.uneb.astrojumper.entities.FinalSpaceship;
 import br.uneb.astrojumper.entities.Ray;
-import br.uneb.astrojumper.tiles.Damage;
-import br.uneb.astrojumper.tiles.FinalSpaceship;
+import br.uneb.astrojumper.entities.meteor.Meteor;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class CollisionListener implements ContactListener {

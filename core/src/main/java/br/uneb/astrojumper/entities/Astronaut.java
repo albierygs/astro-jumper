@@ -226,7 +226,7 @@ public class Astronaut extends Sprite {
     public void receiveDamage(float upwardImpulse, float horizontalImpulse) {
         if (!takingDamage) {
             remainingLifes--;
-            playScreen.getHud().setLifes(remainingLifes);
+            playScreen.getHud().setLifes(Math.max(remainingLifes, 0));
             takingDamage = true;
             this.body.setLinearVelocity(new Vector2(0, 0));
             this.body.applyLinearImpulse(new Vector2(horizontalImpulse, upwardImpulse), this.body.getWorldCenter(), true);

@@ -1,11 +1,12 @@
 package br.uneb.astrojumper.screens;
-import br.uneb.astrojumper.screens.EndLevelScreen;
+
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.entities.Astronaut;
+import br.uneb.astrojumper.entities.FinalSpaceship;
 import br.uneb.astrojumper.scenes.Hud;
+import br.uneb.astrojumper.tiles.CollisionListener;
 import br.uneb.astrojumper.tiles.WorldObjectsManager;
 import br.uneb.astrojumper.utils.AssetLoader;
-import br.uneb.astrojumper.utils.CollisionListener;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -42,6 +43,8 @@ public class PlayScreen implements Screen {
     private boolean gameOver;
     private boolean completed;
 
+    private FinalSpaceship finalSpaceship;
+
     public PlayScreen(final AstroJumper game, TiledMap mapLevel) {
         this.game = game;
         this.gameOver = false;
@@ -74,6 +77,8 @@ public class PlayScreen implements Screen {
         music.setLooping(true);
         music.setVolume(0.5f);
         music.play();
+
+        this.finalSpaceship = worldObjectsManager.getFinalSpaceship();
     }
 
     @Override
@@ -112,7 +117,10 @@ public class PlayScreen implements Screen {
         batch.begin();
 
         worldObjectsManager.render(batch);
-        player.draw(batch);
+
+        if (finalSpaceship == null || !finalSpaceship.isAnimationStarted()) {
+            player.draw(batch);
+        }
 
         batch.end();
 
@@ -168,6 +176,10 @@ public class PlayScreen implements Screen {
             renderer.setView(gameCam);
 
             worldObjectsManager.update(delta);
+
+            if (finalSpaceship != null && finalSpaceship.isAnimationStarted() && !finalSpaceship.isAnimationFinished()) {
+                finalSpaceship.update(delta);
+            }
         }
     }
 

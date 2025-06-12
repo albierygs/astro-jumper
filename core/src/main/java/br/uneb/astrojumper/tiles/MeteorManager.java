@@ -1,6 +1,7 @@
 package br.uneb.astrojumper.tiles;
 
-import br.uneb.astrojumper.entities.Meteor;
+import br.uneb.astrojumper.entities.meteor.Meteor;
+import br.uneb.astrojumper.entities.meteor.MeteorFactory;
 import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.utils.Constants;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -68,7 +69,7 @@ public class MeteorManager {
 
     private void spawnMeteor() {
         for (Vector2 position : spawnPositions) {
-            Meteor newMeteor = new Meteor(playScreen, position);
+            Meteor newMeteor = new Meteor(playScreen, position, MeteorFactory.getBaseMeteor(playScreen));
             activeMeteors.add(newMeteor);
         }
     }
