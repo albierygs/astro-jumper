@@ -42,7 +42,7 @@ public class EndLevelScreen implements Screen {
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
-        background = AssetLoader.get("background_parabens.png", Texture.class); // Use a imagem que você quiser
+        background = AssetLoader.get("background_parabens.png", Texture.class);
         batch = new SpriteBatch();
         skin = new Skin();
 
@@ -75,8 +75,10 @@ public class EndLevelScreen implements Screen {
         TextButton menuButton = new TextButton("Menu", skin);
         TextButton quitButton = new TextButton("Quit", skin);
 
-        clickSound = AssetLoader.get("click.wav", Sound.class);
-        victoryMusic = AssetLoader.get("VICTORY.mp3", Music.class); // Adicione ao AssetLoader
+        // ✅ Som de clique atualizado para .mp3
+        clickSound = AssetLoader.get("click.mp3", Sound.class);
+
+        victoryMusic = AssetLoader.get("VICTORY.mp3", Music.class);
         victoryMusic.setLooping(false);
         victoryMusic.setVolume(0.6f);
         victoryMusic.play();
@@ -102,7 +104,7 @@ public class EndLevelScreen implements Screen {
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectScreen(game));
                         dispose();
                     }
                 }, 0.3f);
