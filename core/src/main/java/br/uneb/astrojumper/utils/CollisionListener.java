@@ -16,34 +16,37 @@ public class CollisionListener implements ContactListener {
         Object userDataA = fixA.getUserData();
         Object userDataB = fixB.getUserData();
 
-        // colisão do meteoro com o chão para acionar a axplosão
+        // colisão do meteoro com o chão para acionar a explosão
         if (userDataA instanceof Meteor) {
             ((Meteor) userDataA).colide();
         } else if (userDataB instanceof Meteor) {
             ((Meteor) userDataB).colide();
         }
 
-
         // lógica para colisão entre astronauta e meteoro
         if ((userDataA instanceof Meteor && userDataB instanceof Astronaut) ||
             (userDataA instanceof Astronaut && userDataB instanceof Meteor)) {
 
-            // astronauta recebendo dano
+            // astronauta recebendo dano -- DESATIVADO
+            /*
             if (userDataA instanceof Astronaut) {
                 ((Astronaut) userDataA).receiveDamage(0, 0);
             } else {
                 ((Astronaut) userDataB).receiveDamage(0, 0);
             }
+            */
 
         } else if ((userDataA instanceof Damage && userDataB instanceof Astronaut) ||
             (userDataA instanceof Astronaut && userDataB instanceof Damage)) {
 
-            // astronauta recebendo dano
+            // astronauta recebendo dano -- DESATIVADO
+            /*
             if (userDataA instanceof Astronaut) {
                 ((Astronaut) userDataA).receiveDamage(4f, -1);
             } else {
                 ((Astronaut) userDataB).receiveDamage(4f, -1);
             }
+            */
 
         } else if ((userDataA instanceof FinalSpaceship && userDataB instanceof Astronaut) ||
             (userDataA instanceof Astronaut && userDataB instanceof FinalSpaceship)) {

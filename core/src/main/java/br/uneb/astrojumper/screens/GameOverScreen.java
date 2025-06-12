@@ -70,13 +70,12 @@ public class GameOverScreen implements Screen {
 
         Label title = new Label("GAME OVER", skin, "title");
 
-        // BOTÕES ATUALIZADOS
         TextButton retryButton = new TextButton("Retry", skin);
         TextButton menuButton = new TextButton("Menu", skin);
         TextButton quitButton = new TextButton("Quit", skin);
 
-
-        clickSound = AssetLoader.get("click.wav", Sound.class);
+        // ✅ Atualizado de .wav para .mp3
+        clickSound = AssetLoader.get("click.mp3", Sound.class);
         gameOverMusic = AssetLoader.get("GAMEOVER.wav", Music.class);
         gameOverMusic.setLooping(false);
         gameOverMusic.setVolume(0.5f);
@@ -103,7 +102,7 @@ public class GameOverScreen implements Screen {
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        game.setScreen(new MainMenuScreen(game));
+                        game.setScreen(new LevelSelectScreen(game));
                         dispose();
                     }
                 }, 0.3f);
@@ -183,7 +182,6 @@ public class GameOverScreen implements Screen {
     @Override
     public void dispose() {
         if (stage != null) stage.dispose();
-       // if (background != null) background.dispose();
         if (batch != null) batch.dispose();
         if (clickSound != null) clickSound.dispose();
         if (gameOverMusic != null) gameOverMusic.dispose();

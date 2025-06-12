@@ -94,7 +94,8 @@ public class MainMenuScreen implements Screen {
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        game.setScreen(new PlayScreen(game, AssetLoader.get("level1.tmx", TiledMap.class)));
+                        game.setScreen(new LevelSelectScreen(game));
+
                         dispose();
                     }
                 }, 0.3f);
