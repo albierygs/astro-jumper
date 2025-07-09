@@ -85,7 +85,7 @@ public class LevelSelectScreen implements Screen {
         TextButton level3 = new TextButton("Level 3", skin);
         TextButton backButton = new TextButton("Back", skin);
 
-        clickSound = AssetLoader.get("click.mp3", Sound.class);
+        clickSound = AssetLoader.get("click.wav", Sound.class);
         victoryMusic = AssetLoader.get("VICTORY.mp3", Music.class);
         victoryMusic.setLooping(false);
         victoryMusic.setVolume(0.6f);

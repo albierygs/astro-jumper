@@ -8,6 +8,8 @@ import br.uneb.astrojumper.tiles.CollisionListener;
 import br.uneb.astrojumper.tiles.WorldObjectsManager;
 import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
+import com.badlogic.gdx.Gdx; // Import Gdx for input
+import com.badlogic.gdx.Input; // Import Input for key checking
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -42,6 +44,7 @@ public class PlayScreen implements Screen {
 
     private boolean gameOver;
     private boolean completed;
+    private boolean paused; // New field for pause state
 
     private FinalSpaceship finalSpaceship;
 
@@ -49,6 +52,7 @@ public class PlayScreen implements Screen {
         this.game = game;
         this.gameOver = false;
         this.completed = false;
+        this.paused = false; // Initialize paused to false
 
         batch = new SpriteBatch();
         gameCam = new OrthographicCamera();
@@ -124,7 +128,7 @@ public class PlayScreen implements Screen {
 
         batch.end();
 
-        box2DRenderer.render(world, gameCam.combined);
+        // box2DRenderer.render(world, gameCam.combined);
 
         batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
@@ -139,11 +143,13 @@ public class PlayScreen implements Screen {
     @Override
     public void pause() {
         // Invoked when your application is paused.
+        this.paused = true; // Automatically pause when application loses focus
     }
 
     @Override
     public void resume() {
         // Invoked when your application is resumed after pause.
+        this.paused = false; // Automatically unpause when application regains focus
     }
 
     @Override
@@ -165,7 +171,20 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float delta) {
-        if (!completed) {
+        // Toggle pause state with ESC key
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            paused = !paused;
+            // Optionally, you might want to stop/resume music here
+            if (paused) {
+                music.pause();
+                hud.setPaused(true); // Update HUD to show "PAUSED"
+            } else {
+                music.play();
+                hud.setPaused(false); // Update HUD to hide "PAUSED"
+            }
+        }
+
+        if (!paused && !completed) { // Only update if not paused and not completed
             player.update(delta);
 
             world.step(1 / 60f, 6, 2);
@@ -181,6 +200,7 @@ public class PlayScreen implements Screen {
                 finalSpaceship.update(delta);
             }
         }
+        hud.update(delta); // Always update HUD, even when paused (for the PAUSED message)
     }
 
     public World getWorld() {
@@ -201,9 +221,20 @@ public class PlayScreen implements Screen {
 
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
+        if (gameOver) {
+            music.stop(); // Stop music on game over
+        }
     }
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+        if (completed) {
+            music.stop(); // Stop music on level completion
+        }
+    }
+
+    // New getter for pause state
+    public boolean isPaused() {
+        return paused;
     }
 }

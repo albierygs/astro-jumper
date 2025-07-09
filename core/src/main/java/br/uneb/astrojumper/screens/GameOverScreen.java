@@ -76,7 +76,7 @@ public class GameOverScreen implements Screen {
         TextButton quitButton = new TextButton("Quit", skin);
 
         // ✅ Atualizado de .wav para .mp3
-        clickSound = AssetLoader.get("click.mp3", Sound.class);
+        clickSound = AssetLoader.get("click.wav", Sound.class);
         gameOverMusic = AssetLoader.get("GAMEOVER.wav", Music.class);
         gameOverMusic.setLooping(false);
         gameOverMusic.setVolume(0.5f);

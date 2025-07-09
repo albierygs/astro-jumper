@@ -256,6 +256,10 @@ public class Astronaut extends Sprite {
         return remainingLifes <= 0;
     }
 
+    public int getRemainingLives() {
+        return remainingLifes;
+    }
+
     public enum State {FALLING, JUMPING, STANDING, RUNNING, DEAD}
 
     public Body getBody() {
