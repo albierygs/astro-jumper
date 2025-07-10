@@ -36,7 +36,7 @@ public class GameOverScreen implements Screen {
     private Sound clickSound;
     private Music gameOverMusic;
 
-    public GameOverScreen(AstroJumper game) {
+    public GameOverScreen(AstroJumper game, int level) {
 
         viewport = new FitViewport(Constants.VIRTUAL_WIDTH, Constants.VIRTUAL_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
@@ -76,7 +76,7 @@ public class GameOverScreen implements Screen {
         TextButton quitButton = new TextButton("Quit", skin);
 
         // ✅ Atualizado de .wav para .mp3
-        clickSound = AssetLoader.get("click.wav", Sound.class);
+        clickSound = AssetLoader.get("click.mp3", Sound.class);
         gameOverMusic = AssetLoader.get("GAMEOVER.wav", Music.class);
         gameOverMusic.setLooping(false);
         gameOverMusic.setVolume(0.5f);
@@ -86,10 +86,11 @@ public class GameOverScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clickSound.play(1.0f);
+                String levelName = "level" + level + ".tmx";
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        game.setScreen(new PlayScreen(game, AssetLoader.get("level1.tmx", TiledMap.class)));
+                        game.setScreen(new PlayScreen(game, AssetLoader.get(levelName, TiledMap.class), level));
                         dispose();
                     }
                 }, 0.3f);

@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -113,7 +112,7 @@ public class MainMenuScreen implements Screen {
         table.add(exitButton).width(160).height(45).padBottom(15).row();
 
         // Som
-        clickSound = AssetLoader.get("click.wav", Sound.class);
+        clickSound = AssetLoader.get("click.mp3", Sound.class);
         menuMusic = AssetLoader.get("menu_music.mp3", Music.class);
         menuMusic.setLooping(true);
         menuMusic.setVolume(0.5f);

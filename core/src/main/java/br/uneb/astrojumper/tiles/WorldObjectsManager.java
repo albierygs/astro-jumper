@@ -3,6 +3,7 @@ package br.uneb.astrojumper.tiles;
 import br.uneb.astrojumper.entities.FinalSpaceship;
 import br.uneb.astrojumper.entities.Ray;
 import br.uneb.astrojumper.entities.meteor.Meteor;
+import br.uneb.astrojumper.entities.meteor.MeteorFactory;
 import br.uneb.astrojumper.screens.PlayScreen;
 import br.uneb.astrojumper.tiles.factories.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -34,8 +35,8 @@ public class WorldObjectsManager {
         tileFactories = new HashMap<>();
 
         // registrando as fábricas para cada tipo de camada
-        tileFactories.put("ground", new StaticTileFactory());
-        tileFactories.put("collision", new StaticTileFactory());
+        tileFactories.put("ground", new GroundTileFactory());
+        tileFactories.put("collision", new CollisionTileFactory());
         tileFactories.put("damage", new DamageTileFactory());
         tileFactories.put("rays", new RayTileFactory());
         tileFactories.put("final", new FinalSpaceshipTileFactory());
@@ -43,7 +44,7 @@ public class WorldObjectsManager {
         // Processar camadas do mapa
         for (MapLayer layer : map.getLayers()) {
             // a camada dos meteoros é gerenciado em outra classe
-            if (layer.getName().equalsIgnoreCase("meteor-spawns") || layer.getName().equalsIgnoreCase("begin")) {
+            if (layer.getName().equalsIgnoreCase("meteor-spawns") || layer.getName().equalsIgnoreCase("begin") || layer.getName().equalsIgnoreCase("enemies")) {
                 continue;
             }
 
@@ -60,7 +61,7 @@ public class WorldObjectsManager {
                 }
             } else {
                 for (MapObject object : layer.getObjects()) {
-                    ITileObject tile = new StaticTileFactory().createTile(playScreen, object);
+                    ITileObject tile = new GroundTileFactory().createTile(playScreen, object);
                     tileObjects.add(tile);
                 }
             }
@@ -99,6 +100,7 @@ public class WorldObjectsManager {
             tile.dispose();
         }
         tileObjects.clear();
+        MeteorFactory.clear();
     }
 
     public FinalSpaceship getFinalSpaceship() {

@@ -16,4 +16,8 @@ public class MeteorFactory {
         }
         return baseMeteor;
     }
+
+    public static void clear() {
+        meteor.clear();
+    }
 }

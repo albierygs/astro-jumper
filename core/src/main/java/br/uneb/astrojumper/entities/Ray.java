@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -33,7 +32,7 @@ public class Ray extends TileObject implements ITileObject {
 
         // configurações dos bits do raio
         fixture.getFilterData().categoryBits = Constants.RAY_BIT;
-        fixture.getFilterData().maskBits = Constants.PLAYER_BIT;
+        fixture.getFilterData().maskBits = Constants.PLAYER_BIT | Constants.PROJECTILE_BIT;
 
         Texture texture = AssetLoader.get("bolt-sheet.png", Texture.class);
 
@@ -76,7 +75,20 @@ public class Ray extends TileObject implements ITileObject {
 
     @Override
     public void render(Batch batch) {
-        if (collected && !finished) {
+        if (!collected) {
+            TextureRegion frame = animation.getKeyFrames()[0];
+
+            float width = frame.getRegionWidth() / Constants.PIXELS_PER_METER;
+            float height = frame.getRegionHeight() / Constants.PIXELS_PER_METER;
+
+            batch.draw(
+                frame,
+                position.x / Constants.PIXELS_PER_METER - width / 2f,
+                position.y / Constants.PIXELS_PER_METER - height / 2f,
+                width,
+                height
+            );
+        } else if (!finished) {
             TextureRegion frame = animation.getKeyFrame(stateTime);
 
             float width = frame.getRegionWidth() / Constants.PIXELS_PER_METER;
@@ -108,13 +120,13 @@ public class Ray extends TileObject implements ITileObject {
         collect();
 
         // removendo o tile do mapa após a colisão
-        TiledMapTileLayer layer = (TiledMapTileLayer) playScreen.getMap().getLayers().get(2);
+        /*TiledMapTileLayer layer = (TiledMapTileLayer) playScreen.getMap().getLayers().get(1);
         if (layer != null && bounds instanceof RectangleMapObject) {
             Rectangle rect = ((RectangleMapObject) bounds).getRectangle();
             int cellX = (int) (rect.getX() / layer.getTileWidth());
             int cellY = (int) (rect.getY() / layer.getTileHeight());
             layer.setCell(cellX, cellY, null);
-        }
+        }*/
     }
 
     public boolean isFinished() {

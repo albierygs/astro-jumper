@@ -3,7 +3,11 @@ package br.uneb.astrojumper.tiles;
 import br.uneb.astrojumper.entities.Astronaut;
 import br.uneb.astrojumper.entities.FinalSpaceship;
 import br.uneb.astrojumper.entities.Ray;
+import br.uneb.astrojumper.entities.SpaceshipBullet;
+import br.uneb.astrojumper.entities.enemy.Enemy;
+import br.uneb.astrojumper.entities.enemy.movable.MovableEnemyBase;
 import br.uneb.astrojumper.entities.meteor.Meteor;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class CollisionListener implements ContactListener {
@@ -14,6 +18,18 @@ public class CollisionListener implements ContactListener {
 
         Object userDataA = fixA.getUserData();
         Object userDataB = fixB.getUserData();
+
+        if (userDataA instanceof SpaceshipBullet) {
+            ((SpaceshipBullet) userDataA).colide();
+            if (userDataB instanceof Astronaut) {
+                ((Astronaut) userDataB).receiveDamage(0, 0); // Player takes damage
+            }
+        } else if (userDataB instanceof SpaceshipBullet) {
+            ((SpaceshipBullet) userDataB).colide();
+            if (userDataA instanceof Astronaut) {
+                ((Astronaut) userDataA).receiveDamage(0, 0); // Player takes damage
+            }
+        }
 
         // colisão do meteoro com o chão para acionar a axplosão
         if (userDataA instanceof Meteor) {
@@ -62,6 +78,34 @@ public class CollisionListener implements ContactListener {
             } else {
                 ((Ray) userDataB).colide();
             }
+        } else if ((userDataA instanceof MovableEnemyBase && userDataB instanceof CollisionTileObject) ||
+            (userDataB instanceof MovableEnemyBase && userDataA instanceof CollisionTileObject)) {
+            if (userDataA instanceof MovableEnemyBase) {
+                ((MovableEnemyBase) userDataA).turn();
+            } else {
+                ((MovableEnemyBase) userDataB).turn();
+            }
+        } else if ((userDataA instanceof Astronaut && userDataB instanceof Enemy) ||
+            (userDataA instanceof Enemy && userDataB instanceof Astronaut)) {
+
+            Astronaut player = (userDataA instanceof Astronaut) ? (Astronaut) userDataA : (Astronaut) userDataB;
+            Enemy enemy = (userDataA instanceof Enemy) ? (Enemy) userDataA : (Enemy) userDataB;
+
+            float playerBottom = player.getBody().getPosition().y - player.getHeight() / 2;
+            float enemyTop = enemy.getBody().getPosition().y + enemy.getHeight() / 2;
+            float playerSpeedY = player.getBody().getLinearVelocity().y;
+
+            if (playerSpeedY < -0.01f && playerBottom > (enemyTop - 0.2f)) {
+                enemy.defeat();
+
+                player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
+                player.getBody().applyLinearImpulse(new Vector2(0, 5f), player.getBody().getWorldCenter(), true);
+            } else {
+                if (enemy.getBody() != null) {
+                    enemy.getBody().setLinearVelocity(enemy.getBody().getLinearVelocity().x, 0);
+                }
+                player.receiveDamage(0, 0);
+            }
         }
     }
 
@@ -84,7 +128,18 @@ public class CollisionListener implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
+        Object userDataA = contact.getFixtureA().getUserData();
+        Object userDataB = contact.getFixtureB().getUserData();
 
+        if ((userDataA instanceof SpaceshipBullet && ((SpaceshipBullet) userDataA).isFinished()) ||
+            (userDataB instanceof SpaceshipBullet && ((SpaceshipBullet) userDataB).isFinished())) {
+            contact.setEnabled(false);
+        }
+
+        if ((userDataA instanceof MovableEnemyBase && ((MovableEnemyBase) userDataA).isDefeated()) ||
+            (userDataB instanceof MovableEnemyBase && ((MovableEnemyBase) userDataB).isDefeated())) {
+            contact.setEnabled(false);
+        }
     }
 
     @Override

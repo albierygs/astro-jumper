@@ -6,11 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapObject;
 
-public class StaticTileObject extends TileObject implements ITileObject {
-    public StaticTileObject(PlayScreen playScreen, MapObject bounds) {
+public class GroundTileObject extends TileObject implements ITileObject {
+    public GroundTileObject(PlayScreen playScreen, MapObject bounds) {
         super(playScreen, bounds);
         fixture.getFilterData().categoryBits = Constants.GROUND_BIT;
-        fixture.getFilterData().maskBits = Constants.PLAYER_BIT | Constants.METEOR_BIT | Constants.RAY_BIT;
+        fixture.getFilterData().maskBits = Constants.PLAYER_BIT | Constants.METEOR_BIT | Constants.RAY_BIT | Constants.ENEMY_BIT | Constants.PROJECTILE_BIT;
     }
 
     @Override

@@ -123,7 +123,7 @@ public class Astronaut extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(25 / Constants.PIXELS_PER_METER);
         fixtureDef.filter.categoryBits = Constants.PLAYER_BIT;
-        fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.RAY_BIT | Constants.METEOR_BIT | Constants.DAMAGE_BIT | Constants.FINAL_SPACESHIP_BIT;
+        fixtureDef.filter.maskBits = Constants.GROUND_BIT | Constants.RAY_BIT | Constants.METEOR_BIT | Constants.DAMAGE_BIT | Constants.FINAL_SPACESHIP_BIT | Constants.ENEMY_BIT;
 
         fixtureDef.shape = shape;
         fixtureDef.friction = 0.05f;
@@ -251,18 +251,22 @@ public class Astronaut extends Sprite {
     public boolean isDead() {
         if (body.getPosition().y < 0) {
             remainingLifes = 0;
-            playScreen.getHud().setLifes(remainingLifes);
+            playScreen.getHud().setLifes(Math.max(remainingLifes, 0));
         }
         return remainingLifes <= 0;
     }
 
     public int getRemainingLives() {
-        return remainingLifes;
+        return Math.max(0, remainingLifes);
     }
 
     public enum State {FALLING, JUMPING, STANDING, RUNNING, DEAD}
 
     public Body getBody() {
         return body;
+    }
+
+    public int getRemainingLifes() {
+        return remainingLifes;
     }
 }

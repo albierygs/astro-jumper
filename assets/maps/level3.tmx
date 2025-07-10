@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="170" height="10" tilewidth="68" tileheight="68" infinite="0" nextlayerid="12" nextobjectid="93">
+ <tileset firstgid="1" source="assets/platformerPack-industrial-tilesheet.tsx"/>
+ <imagelayer id="3" name="background" repeatx="1">
+  <image source="assets/background3.jpg" width="1280" height="720"/>
+ </imagelayer>
+ <layer id="1" name="graphics" width="170" height="10">
+  <data encoding="base64" compression="zlib">
+   eJztmFEKwyAMhr3IdgFfBz3D2pe+7A67/wnaQQsiMU00apr5w4/VgqbxwwadGxqyp/fueffSO5Ab69s7gD/Rp3cAN9EjeqZ6CNYvN6sCW9ojiLvBaZm05EZLHKXC2GvJKVRfUMc0qgYfPmN9C5xy+MvhNId/zj9Ns6T58IEpa1vhlFODcs/TMEdcTq1I8ls8YGxdK5xKMRrnIM5NCafWWMbqFewdxGiKVSxPr8PUfk/V2mOIz7PN4atVTRxqEpxL6gx4OpxT6jwS9wahOGNX/dQdRS27RMs9K1vlvaY3PaVHqw==
+  </data>
+ </layer>
+ <objectgroup id="6" name="ground">
+  <object id="5" x="135.667" y="204" width="1294.33" height="28"/>
+  <object id="6" x="0" y="612" width="1292" height="68"/>
+  <object id="8" x="1428" y="204" width="952" height="28"/>
+  <object id="9" x="2380" y="204" width="68" height="340"/>
+  <object id="10" x="1292" y="612" width="1156" height="68"/>
+  <object id="11" x="2040" y="544" width="272" height="68"/>
+  <object id="12" x="2108" y="476" width="204" height="68"/>
+  <object id="13" x="2176" y="408" width="136" height="68"/>
+  <object id="14" x="2244" y="340" width="68" height="68"/>
+  <object id="15" x="1292" y="544" width="476" height="68"/>
+  <object id="16" x="1360" y="476" width="340" height="68"/>
+  <object id="17" x="1428" y="408" width="204" height="68"/>
+  <object id="18" x="1496" y="340" width="68" height="68"/>
+  <object id="19" x="68" y="204.333" width="68" height="339.667"/>
+  <object id="38" x="2448" y="612" width="1158" height="28"/>
+  <object id="39" x="3808" y="612" width="136" height="28"/>
+  <object id="40" x="4488" y="612" width="68" height="28"/>
+  <object id="41" x="4148" y="612" width="136" height="28"/>
+  <object id="42" x="4760" y="612" width="69.3333" height="25.3333"/>
+  <object id="43" x="5032" y="612" width="406.667" height="25.3333"/>
+  <object id="51" x="5440" y="612" width="1564" height="68"/>
+  <object id="52" x="6936" y="544" width="68" height="68"/>
+  <object id="53" x="7072" y="476" width="68" height="204"/>
+  <object id="54" x="7208" y="408" width="68" height="272"/>
+  <object id="56" x="5576" y="476" width="1292" height="68"/>
+  <object id="57" x="6460" y="136" width="408" height="340"/>
+  <object id="58" x="5644" y="408" width="816" height="68"/>
+  <object id="59" x="5712" y="340" width="476" height="68"/>
+  <object id="60" x="5780" y="272" width="340" height="68"/>
+  <object id="61" x="5848" y="204" width="204" height="68"/>
+  <object id="62" x="5916" y="136" width="68" height="68"/>
+  <object id="63" x="6120" y="136" width="340" height="68"/>
+  <object id="64" x="6188" y="204" width="272" height="68"/>
+  <object id="65" x="6256" y="272" width="204" height="68"/>
+  <object id="67" x="7344" y="340" width="272" height="340"/>
+  <object id="68" x="7752" y="340" width="476" height="204"/>
+  <object id="69" x="7752" y="612" width="476" height="68"/>
+  <object id="71" x="8228" y="612" width="612" height="68"/>
+  <object id="72" x="8296" y="544" width="544" height="68"/>
+  <object id="73" x="8364" y="476" width="476" height="68"/>
+  <object id="74" x="8228" y="340" width="613.333" height="27.3333"/>
+  <object id="75" x="8840" y="340" width="134.667" height="26.6667"/>
+  <object id="78" x="9860" y="612" width="1696" height="28"/>
+  <object id="81" x="8840" y="612" width="1020" height="26"/>
+  <object id="91" x="5440" y="544" width="68" height="68"/>
+ </objectgroup>
+ <objectgroup id="7" name="damage">
+  <object id="44" x="2516" y="612">
+   <polygon points="0,0 14.6667,-30.6667 122.667,-32 136,0"/>
+  </object>
+  <object id="45" x="2788" y="612">
+   <polygon points="0,0 16,-30.6667 120,-32 136,0"/>
+  </object>
+  <object id="92" x="3060" y="612">
+   <polygon points="0,0 15.3333,-29.3333 120.667,-29.3333 136,0"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="8" name="rays">
+  <object id="7" x="1496" y="272" width="68" height="68"/>
+  <object id="47" x="6392" y="340" width="68" height="68"/>
+  <object id="70" x="8092" y="544" width="68" height="68"/>
+ </objectgroup>
+ <objectgroup id="5" name="collision">
+  <object id="3" x="0" y="0" height="680"/>
+  <object id="4" x="11560" y="0" height="680"/>
+  <object id="20" x="348.667" y="544" width="51.3333" height="68"/>
+  <object id="22" x="825.333" y="544" width="50" height="68"/>
+  <object id="25" x="1646" y="302" height="160">
+   <properties>
+    <property name="enemy" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="26" x="2162" y="266" width="2" height="190">
+   <properties>
+    <property name="enemy" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="66" x="6332.75" y="68" width="50.5" height="68"/>
+  <object id="88" x="8780.67" y="272" width="51.3333" height="68"/>
+  <object id="89" x="8441.33" y="272" width="50.6667" height="68"/>
+  <object id="90" x="8100.67" y="272" width="50" height="68"/>
+ </objectgroup>
+ <objectgroup id="9" name="final">
+  <object id="32" x="10477.3" y="96" width="312" height="512"/>
+ </objectgroup>
+ <objectgroup id="10" name="meteor-spawns">
+  <object id="28" x="1554" y="12"/>
+  <object id="29" x="1902" y="12"/>
+  <object id="30" x="2236" y="14"/>
+  <object id="34" x="4794" y="14"/>
+  <object id="35" x="4226" y="14"/>
+  <object id="36" x="3890" y="18"/>
+  <object id="83" x="9138" y="12"/>
+  <object id="84" x="9258" y="12"/>
+  <object id="85" x="9376" y="12"/>
+ </objectgroup>
+ <objectgroup id="4" name="begin">
+  <object id="1" x="916" y="132"/>
+ </objectgroup>
+ <objectgroup id="11" name="enemies">
+  <object id="23" x="606.667" y="569.333">
+   <properties>
+    <property name="type" value="movable-ground"/>
+   </properties>
+  </object>
+  <object id="24" x="1914" y="426">
+   <properties>
+    <property name="type" value="movable-flying"/>
+   </properties>
+  </object>
+  <object id="27" x="2872" y="124">
+   <properties>
+    <property name="type" value="static-flying"/>
+   </properties>
+  </object>
+  <object id="37" x="3508.33" y="575.333">
+   <properties>
+    <property name="type" value="static-ground"/>
+   </properties>
+  </object>
+  <object id="49" x="5392" y="88">
+   <properties>
+    <property name="type" value="static-flying"/>
+   </properties>
+  </object>
+  <object id="50" x="7856" y="80">
+   <properties>
+    <property name="type" value="static-flying"/>
+   </properties>
+  </object>
+  <object id="79" x="8290" y="284">
+   <properties>
+    <property name="type" value="movable-ground"/>
+   </properties>
+  </object>
+  <object id="80" x="8636" y="286">
+   <properties>
+    <property name="type" value="movable-ground"/>
+   </properties>
+  </object>
+  <object id="87" x="9608" y="572">
+   <properties>
+    <property name="type" value="static-ground"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

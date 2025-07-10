@@ -3,13 +3,16 @@ package br.uneb.astrojumper.screens;
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.entities.Astronaut;
 import br.uneb.astrojumper.entities.FinalSpaceship;
+import br.uneb.astrojumper.entities.SpaceshipBullet;
+import br.uneb.astrojumper.entities.enemy.EnemyManager;
 import br.uneb.astrojumper.scenes.Hud;
 import br.uneb.astrojumper.tiles.CollisionListener;
+import br.uneb.astrojumper.tiles.ITileObject;
 import br.uneb.astrojumper.tiles.WorldObjectsManager;
 import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
-import com.badlogic.gdx.Gdx; // Import Gdx for input
-import com.badlogic.gdx.Input; // Import Input for key checking
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -18,11 +21,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.Iterator;
 
 public class PlayScreen implements Screen {
     private final AstroJumper game;
@@ -36,9 +41,9 @@ public class PlayScreen implements Screen {
 
     private World world;
     private final Astronaut player;
-    private Box2DDebugRenderer box2DRenderer;
 
     private WorldObjectsManager worldObjectsManager;
+    private EnemyManager enemyManager;
 
     private Music music;
 
@@ -48,11 +53,16 @@ public class PlayScreen implements Screen {
 
     private FinalSpaceship finalSpaceship;
 
-    public PlayScreen(final AstroJumper game, TiledMap mapLevel) {
+    private int level;
+
+    private Array<ITileObject> projectiles;
+
+    public PlayScreen(final AstroJumper game, TiledMap mapLevel, int level) {
         this.game = game;
         this.gameOver = false;
         this.completed = false;
-        this.paused = false; // Initialize paused to false
+        this.paused = false;
+        this.level = level;
 
         batch = new SpriteBatch();
         gameCam = new OrthographicCamera();
@@ -61,19 +71,21 @@ public class PlayScreen implements Screen {
             Constants.VIRTUAL_HEIGHT / Constants.PIXELS_PER_METER,
             gameCam
         );
+        map = mapLevel;
         hud = new Hud(batch, this);
 
-        map = mapLevel;
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Constants.PIXELS_PER_METER);
 
         gameCam.position.set((float) viewport.getWorldWidth() / 2, (float) viewport.getWorldHeight() / 2, 0);
 
         world = new World(new Vector2(0, -10), true);
-        box2DRenderer = new Box2DDebugRenderer();
 
         player = new Astronaut(this);
 
         worldObjectsManager = new WorldObjectsManager(this);
+        enemyManager = new EnemyManager(this);
+
+        projectiles = new Array<>();
 
         world.setContactListener(new CollisionListener());
 
@@ -98,13 +110,13 @@ public class PlayScreen implements Screen {
         if (gameOver && !completed) {
             player.update(delta);
 
-            if (player.isDeadAnimationFinished()) {
-                game.setScreen(new GameOverScreen(game));
+            if (player.isDeadAnimationFinished() || getHud().getGameTime() == 0) {
+                game.setScreen(new GameOverScreen(game, level));
                 dispose();
                 return;
             }
         } else if (completed) {
-            game.setScreen(new EndLevelScreen(game));
+            game.setScreen(new EndLevelScreen(game, level));
             dispose();
             return;
         }
@@ -121,14 +133,17 @@ public class PlayScreen implements Screen {
         batch.begin();
 
         worldObjectsManager.render(batch);
+        enemyManager.render(batch);
+
+        for (ITileObject projectile : projectiles) {
+            projectile.render(batch);
+        }
 
         if (finalSpaceship == null || !finalSpaceship.isAnimationStarted()) {
             player.draw(batch);
         }
 
         batch.end();
-
-        // box2DRenderer.render(world, gameCam.combined);
 
         batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
@@ -164,10 +179,16 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         hud.dispose();
         worldObjectsManager.dispose();
+        enemyManager.dispose();
         player.dispose();
-        world.dispose();
-        box2DRenderer.dispose();
         music.dispose();
+
+        for (ITileObject projectile : projectiles) {
+            projectile.dispose();
+        }
+        projectiles.clear();
+
+        world.dispose();
     }
 
     public void update(float delta) {
@@ -195,12 +216,27 @@ public class PlayScreen implements Screen {
             renderer.setView(gameCam);
 
             worldObjectsManager.update(delta);
+            enemyManager.update(delta);
+
+            Iterator<ITileObject> projectileIterator = projectiles.iterator();
+            while (projectileIterator.hasNext()) {
+                ITileObject projectile = projectileIterator.next();
+                projectile.update(delta);
+                if (projectile instanceof SpaceshipBullet && ((SpaceshipBullet) projectile).isFinished()) {
+                    projectile.dispose();
+                    projectileIterator.remove();
+                }
+            }
 
             if (finalSpaceship != null && finalSpaceship.isAnimationStarted() && !finalSpaceship.isAnimationFinished()) {
                 finalSpaceship.update(delta);
             }
         }
         hud.update(delta); // Always update HUD, even when paused (for the PAUSED message)
+    }
+
+    public void addProjectile(ITileObject projectile) {
+        this.projectiles.add(projectile);
     }
 
     public World getWorld() {
@@ -217,6 +253,10 @@ public class PlayScreen implements Screen {
 
     public Hud getHud() {
         return hud;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public void setGameOver(boolean gameOver) {

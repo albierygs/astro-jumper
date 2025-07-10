@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,6 +26,9 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class EndLevelScreen implements Screen {
 
     private Stage stage;
@@ -36,7 +40,10 @@ public class EndLevelScreen implements Screen {
     private Sound clickSound;
     private Music victoryMusic;
 
-    public EndLevelScreen(AstroJumper game) {
+    private static final String PROGRESS_FILE_NAME = "progress.txt";
+    private int completedLevel;
+
+    public EndLevelScreen(AstroJumper game, int level) {
 
         viewport = new FitViewport(Constants.VIRTUAL_WIDTH, Constants.VIRTUAL_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
@@ -83,17 +90,31 @@ public class EndLevelScreen implements Screen {
         victoryMusic.setVolume(0.6f);
         victoryMusic.play();
 
+        this.completedLevel = level;
+        saveProgress(completedLevel);
+
         continueButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 clickSound.play(1.0f);
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        game.setScreen(new PlayScreen(game, AssetLoader.get("level2.tmx", TiledMap.class)));
-                        dispose();
-                    }
-                }, 0.3f);
+                int nextLevel = completedLevel + 1;
+                if (nextLevel <= 3) {
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            game.setScreen(new PlayScreen(game, AssetLoader.get("level" + nextLevel + ".tmx", TiledMap.class), nextLevel));
+                            dispose();
+                        }
+                    }, 0.3f);
+                } else {
+                    Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            game.setScreen(new LevelSelectScreen(game));
+                            dispose();
+                        }
+                    }, 0.3f);
+                }
             }
         });
 
@@ -128,6 +149,29 @@ public class EndLevelScreen implements Screen {
         table.add(continueButton).width(160).height(45).padBottom(15).row();
         table.add(menuButton).width(160).height(45).padBottom(15).row();
         table.add(quitButton).width(160).height(45).padBottom(15).row();
+    }
+
+    private void saveProgress(int level) {
+        FileHandle file = Gdx.files.local(PROGRESS_FILE_NAME);
+        Set<String> levelsToSave = new HashSet<>();
+
+        if (file.exists()) {
+            String text = file.readString();
+            String[] lines = text.split("\\r?\\n");
+            for (String line : lines) {
+                if (!line.trim().isEmpty()) {
+                    levelsToSave.add(line.trim());
+                }
+            }
+        }
+
+        levelsToSave.add("level" + level);
+
+        StringBuilder sb = new StringBuilder();
+        for (String completedLevelName : levelsToSave) {
+            sb.append(completedLevelName).append("\n");
+        }
+        file.writeString(sb.toString(), false);
     }
 
     private Drawable createButtonDrawable(Color color) {

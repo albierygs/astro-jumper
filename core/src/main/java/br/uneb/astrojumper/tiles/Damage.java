@@ -13,7 +13,7 @@ public class Damage extends TileObject implements ITileObject {
         body.setType(BodyDef.BodyType.StaticBody);
 
         fixture.getFilterData().categoryBits = Constants.DAMAGE_BIT;
-        fixture.getFilterData().maskBits = Constants.PLAYER_BIT;
+        fixture.getFilterData().maskBits = Constants.PLAYER_BIT | Constants.PROJECTILE_BIT;
     }
 
     @Override

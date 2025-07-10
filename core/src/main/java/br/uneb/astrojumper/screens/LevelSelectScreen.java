@@ -1,6 +1,5 @@
 package br.uneb.astrojumper.screens;
 
-import com.badlogic.gdx.Preferences;
 import br.uneb.astrojumper.AstroJumper;
 import br.uneb.astrojumper.utils.AssetLoader;
 import br.uneb.astrojumper.utils.Constants;
@@ -8,17 +7,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class LevelSelectScreen implements Screen {
 
@@ -31,11 +40,11 @@ public class LevelSelectScreen implements Screen {
     private Skin skin;
     private Sound clickSound;
 
-    private Preferences prefs;
+    private static final String PROGRESS_FILE_NAME = "progress.txt";
+    private Set<String> completedLevels;
 
     public LevelSelectScreen(AstroJumper game) {
         this.game = game;
-        prefs = Gdx.app.getPreferences("AstroJumperPrefs");
 
         viewport = new FitViewport(Constants.VIRTUAL_WIDTH, Constants.VIRTUAL_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
@@ -85,19 +94,25 @@ public class LevelSelectScreen implements Screen {
         TextButton level3 = new TextButton("Level 3", skin);
         TextButton backButton = new TextButton("Back", skin);
 
-        clickSound = AssetLoader.get("click.wav", Sound.class);
+        clickSound = AssetLoader.get("click.mp3", Sound.class);
         victoryMusic = AssetLoader.get("VICTORY.mp3", Music.class);
         victoryMusic.setLooping(false);
         victoryMusic.setVolume(0.6f);
         victoryMusic.play();
 
-        boolean level1Completed = prefs.getBoolean("level1_completed", false);
+        readProgressFile();
+        boolean level1Completed = completedLevels.contains("level1");
+        boolean level2Completed = completedLevels.contains("level2");
 
         if (!level1Completed) {
             level2.setStyle(skin.get("disabled", TextButton.TextButtonStyle.class));
             level2.setDisabled(true);
             level2.getLabel().setColor(Color.GRAY);
 
+            level3.setStyle(skin.get("disabled", TextButton.TextButtonStyle.class));
+            level3.setDisabled(true);
+            level3.getLabel().setColor(Color.GRAY);
+        } else if (!level2Completed) {
             level3.setStyle(skin.get("disabled", TextButton.TextButtonStyle.class));
             level3.setDisabled(true);
             level3.getLabel().setColor(Color.GRAY);
@@ -111,7 +126,7 @@ public class LevelSelectScreen implements Screen {
                     @Override
                     public void run() {
                         victoryMusic.stop();
-                        game.setScreen(new PlayScreen(game, AssetLoader.get("level1.tmx", TiledMap.class)));
+                        game.setScreen(new PlayScreen(game, AssetLoader.get("level1.tmx", TiledMap.class), 1));
                     }
                 }, 0.3f);
             }
@@ -126,13 +141,15 @@ public class LevelSelectScreen implements Screen {
                         @Override
                         public void run() {
                             victoryMusic.stop();
-                            game.setScreen(new PlayScreen(game, AssetLoader.get("level2.tmx", TiledMap.class)));
+                            game.setScreen(new PlayScreen(game, AssetLoader.get("level2.tmx", TiledMap.class), 2));
                             dispose();
                         }
                     }, 0.3f);
                 }
             });
+        }
 
+        if (level2Completed) {
             level3.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -141,7 +158,7 @@ public class LevelSelectScreen implements Screen {
                         @Override
                         public void run() {
                             victoryMusic.stop();
-                            game.setScreen(new PlayScreen(game, AssetLoader.get("level3.tmx", TiledMap.class)));
+                            game.setScreen(new PlayScreen(game, AssetLoader.get("level3.tmx", TiledMap.class), 3));
                             dispose();
                         }
                     }, 0.3f);
@@ -169,6 +186,20 @@ public class LevelSelectScreen implements Screen {
         table.add(level2).width(160).height(45).padBottom(15).row();
         table.add(level3).width(160).height(45).padBottom(15).row();
         table.add(backButton).width(160).height(45).padBottom(15).row();
+    }
+
+    private void readProgressFile() {
+        completedLevels = new HashSet<>();
+        FileHandle file = Gdx.files.local(PROGRESS_FILE_NAME);
+        if (file.exists()) {
+            String text = file.readString();
+            String[] lines = text.split("\\r?\\n");
+            for (String line : lines) {
+                if (!line.trim().isEmpty()) {
+                    completedLevels.add(line.trim());
+                }
+            }
+        }
     }
 
     private Drawable createButtonDrawable(Color color) {
@@ -221,9 +252,7 @@ public class LevelSelectScreen implements Screen {
     public void dispose() {
         if (stage != null) stage.dispose();
         if (batch != null) batch.dispose();
-        if (background != null) background.dispose();
         if (skin != null) skin.dispose();
         if (victoryMusic != null) victoryMusic.dispose();
-        // Não chamamos clickSound.dispose() aqui para evitar descarregar som compartilhado
     }
 }

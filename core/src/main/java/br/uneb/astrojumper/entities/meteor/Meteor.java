@@ -49,7 +49,7 @@ public class Meteor extends TileObject implements ITileObject {
         FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
         fdef.filter.categoryBits = Constants.METEOR_BIT;
-        fdef.filter.maskBits = Constants.GROUND_BIT | Constants.PLAYER_BIT;
+        fdef.filter.maskBits = Constants.GROUND_BIT | Constants.PLAYER_BIT | Constants.PROJECTILE_BIT;
 
         fixture = body.createFixture(fdef);
         fixture.setUserData(this);
